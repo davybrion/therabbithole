@@ -6,8 +6,6 @@ mongoose.connect('mongodb://localhost/therabbithole_test');
 mongoose.connection.collection('customers').drop();
 
 describe('when a customer is saved', function() {
-	var customer = new Customer();
-	
 	it('should fail with validation errors if required fields are missing', function() {
 		var customer = new Customer();
 		customer.save(function(err) {
