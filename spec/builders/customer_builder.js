@@ -1,4 +1,4 @@
-var Customer = require('../../entities.js').Customer;
+var Customer = require('../../lib/entities.js').Customer;
 
 var CustomerBuilder = function() {
 	this.name = 'some customer';
@@ -43,10 +43,11 @@ prototype.includeContactOnInvoice = function() {
 };
 
 prototype.build = function() {
-	var customer = new Customer();
-	customer.name = this.name;
-	customer.vatNumber = this.vatNumber;
-	customer.address = this.address;
+	var customer = new Customer({
+		name: this.name,
+		vatNumber: this.vatNumber,
+		address: this.address
+	});
 	if (this.phoneNumber) { customer.phoneNumber = this.phoneNumber; }
 	if (this.contact) { customer.contact = this.contact; }
 	if (this.includeContactOnInvoice) { customer.includeContactOnInvoice = this.includeContactOnInvoice; }

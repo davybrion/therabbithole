@@ -1,13 +1,9 @@
 var mongoose = require('mongoose'),
-	Customer = require('../../entities.js').Customer,
+	Customer = require('../../lib/entities.js').Customer,
 	CustomerBuilder = require('../builders/customer_builder.js');
 
 mongoose.connect('mongodb://localhost/therabbithole_test');
 mongoose.connection.collection('customers').drop();
-
-var createValidCustomer = function() {
-	return new CustomerBuilder().build();
-};
 
 describe('when a customer is saved', function() {
 	var customer = new Customer();
