@@ -1,0 +1,12 @@
+{
+	"name" : "therabbithole",
+	"version" : "0.0.1",
+	"description" : "breakable toy to experiment with new tech",
+	"main" : "app.js",
+	"dependencies" :
+	{
+		"jslint" : ">= 0.1.0",
+		"mongoose" : ">= 1.7.2",
+		"jasmine-node" : ">= 1.0.6"
+	}
+}

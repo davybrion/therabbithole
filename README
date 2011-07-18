@@ -1,3 +1,5 @@
+NOTE: be sure to run 'npm install' within the project folder to get all of the required dependencies
+
 This project is meant to be a technical playground/breakable toy where i get to play 
 with all kinds of interesting technologies. The initial goal of the project 
 (not counting the learning opportunities) is to be able to generate invoices and 
@@ -8,10 +10,11 @@ Technologies that will be used:
 - Node.JS
 - Express.JS
 - MongoDB
+- Mongoose
 - jQuery
 - Backbone.JS
 - QUnit
-- Jasmine
+- jasmine-node
 
 I'm currently still reading up on Node.JS and MongoDB so it might take a week or two 
 before actual code shows up in this repo :)
