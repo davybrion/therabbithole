@@ -25,7 +25,18 @@ describe('when a customer is saved', function() {
 		customer.save(function(err) {
 			expect(err).toBeNull();
 			asyncSpecDone();
-		})
+		});
+		asyncSpecWait();
+	});
+	
+	it('should contain a default false value for includeContactOnInvoice', function() {
+		var customer = new CustomerBuilder().build();
+		customer.save(function(err) {
+			Customer.findById(customer.id, function(err, result) {
+				expect(result.includeContactOnInvoice).toBe(false);
+				asyncSpecDone();
+			});
+		});
 		asyncSpecWait();
 	});
 });

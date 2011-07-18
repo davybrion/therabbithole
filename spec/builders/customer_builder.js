@@ -37,7 +37,7 @@ prototype.withContact = function(contact) {
 	return this;
 };
 
-prototype.includeContactOnInvoice = function() {
+prototype.withIncludeContactOnInvoice = function() {
 	this.includeContactOnInvoice = true;
 	return this;
 };
@@ -48,9 +48,9 @@ prototype.build = function() {
 		vatNumber: this.vatNumber,
 		address: this.address
 	});
-	if (this.phoneNumber) { customer.phoneNumber = this.phoneNumber; }
-	if (this.contact) { customer.contact = this.contact; }
-	if (this.includeContactOnInvoice) { customer.includeContactOnInvoice = this.includeContactOnInvoice; }
+	if (this.phoneNumber !== undefined) { customer.phoneNumber = this.phoneNumber; }
+	if (this.contact !== undefined) { customer.contact = this.contact; }
+	if (this.includeContactOnInvoice !== undefined) { customer.includeContactOnInvoice = this.includeContactOnInvoice; }
 	return customer;
 };
 
