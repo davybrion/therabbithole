@@ -2,10 +2,9 @@ var Activity = require('../../lib/entities.js').Activity,
 	ObjectId = require('mongoose').Schema.ObjectId;
 
 var ActivityBuilder = function() {
-	this.customer = '4e25937456436de850000006'; // this can really be of any type
+	this.customer = '4e25937456436de850000006'; // should be a valid ObjectId (not an existing one, just valid in form) 
 	this.description = "some cool project";
 	this.hourlyRate = 75;
-	this.performedWork = [];
 };
 
 var prototype = ActivityBuilder.prototype;
