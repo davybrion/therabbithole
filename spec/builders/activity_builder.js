@@ -1,5 +1,4 @@
-var Activity = require('../../lib/entities.js').Activity,
-	ObjectId = require('mongoose').Schema.ObjectId;
+var Activity = require('../../lib/entities.js').Activity;
 
 var ActivityBuilder = function() {
 	this.customer = '4e25937456436de850000006'; // should be a valid ObjectId (not an existing one, just valid in form) 
