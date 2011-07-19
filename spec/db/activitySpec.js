@@ -60,8 +60,8 @@ describe('when an activity is saved', function() {
 					expect(result.performedWork[0].hours).toEqual(8);
 					expect(result.performedWork[1].date).toEqual(today);
 					expect(result.performedWork[1].hours).toEqual(6);
+					asyncSpecDone();
 				});
-				asyncSpecDone();
 			});
 			asyncSpecWait();
 		});
