@@ -1,12 +1,20 @@
 beforeEach(function() {
-	this.addMatchers({
-		toHaveRequiredValidationErrorFor : function(propertyName) {
-			var err = this.actual;
+	this.addMatchers((function() {
+		var toHaveValidationErrorFor = function(err, validatorName, propertyName) {
 			if (!err) { return false; }
 			if (err.name !== 'ValidationError') { return false; }
 			var value = err.errors[propertyName];
 			if (!value) { return false; }
-			return (value === 'Validator "required" failed for path ' + propertyName);
-		}
-	});
+			return (value === 'Validator "' + validatorName + '" failed for path ' + propertyName);
+		};
+				
+		return {
+			toHaveRequiredValidationErrorFor : function(propertyName) {
+				return toHaveValidationErrorFor(this.actual, 'required', propertyName);
+			},
+			toHaveMaxValidationErrorFor: function(propertyName) {
+				return toHaveValidationErrorFor(this.actual, 'max', propertyName);
+			}
+		};
+	}()));
 });

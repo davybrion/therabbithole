@@ -1,0 +1,5 @@
+A lot of the tests in this folder are exploratory in nature, so they don't really
+have any added value outside of getting familiar with MongoDB and Mongoose. There
+are however some tests that check validation of required fields, default values, 
+helper methods regarding embedded documents/objects so it does make sense to have
+tests for those.

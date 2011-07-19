@@ -22,5 +22,12 @@ module.exports = {
 		expect(customer1.includeContactOnInvoice).toEqual(customer2.includeContactOnInvoice);
 		this.addressesShouldBeEqual(customer1.address, customer2.address);
 		this.contactsShouldBeEqual(customer1.contact, customer2.contact);
+	},
+	activitiesShouldBeEqual: function(activity1, activity2) {
+		expect(activity1.customer).toEqual(activity2.customer);
+		expect(activity1.description).toEqual(activity2.description);
+		expect(activity1.billed).toEqual(activity2.billed);
+		expect(activity1.hourlyRate.toFixed()).toEqual(activity2.hourlyRate.toFixed());
+		// TODO: add check for performedWork!
 	}
 };
