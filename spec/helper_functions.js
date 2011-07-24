@@ -8,6 +8,7 @@ module.exports = {
 		expect(address1.postalCode).toEqual(address2.postalCode);
 		expect(address1.country).toEqual(address2.country);
 	},
+
 	contactsShouldBeEqual: function(contact1, contact2) {
 		if (contact1 === null && contact2 === null) { return; }
 		if (contact1 !== null) { expect(contact2).not.toBeNull(); }
@@ -15,6 +16,7 @@ module.exports = {
 		expect(contact1.name).toEqual(contact2.name);
 		expect(contact1.email).toEqual(contact2.email);
 	},
+
 	customersShouldBeEqual: function(customer1, customer2) {
 		expect(customer1.name).toEqual(customer2.name);
 		expect(customer1.vatNumber).toEqual(customer2.vatNumber);
@@ -23,6 +25,7 @@ module.exports = {
 		this.addressesShouldBeEqual(customer1.address, customer2.address);
 		this.contactsShouldBeEqual(customer1.contact, customer2.contact);
 	},
+
 	activitiesShouldBeEqual: function(activity1, activity2) {
 		expect(activity1.customer).toEqual(activity2.customer);
 		expect(activity1.description).toEqual(activity2.description);

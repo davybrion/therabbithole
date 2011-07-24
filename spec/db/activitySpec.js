@@ -6,8 +6,10 @@ var mongoose = require('mongoose'),
 mongoose.connect('mongodb://localhost/therabbithole_test');
 mongoose.connection.collection('activities').drop();
 
-describe('when an activity is saved', function() {
-	describe('with none of its required fields filled in', function() {
+describe('given a new activity', function() {
+	
+	describe('when it is saved with none of its required fields filled in', function() {
+		
 		it('should fail with validation errors for each required field', function() {
 			var activity = new Activity();
 			activity.save(function(err) {
@@ -19,9 +21,11 @@ describe('when an activity is saved', function() {
 			});
 			asyncSpecWait();
 		});
+		
 	});
-	
-	describe('with all of its required fields filled in', function() {
+
+	describe('when it is saved with all of its required fields filled in', function() {
+		
 		it('should not fail', function() {
 			var activity = new ActivityBuilder();
 			activity = activity.build();
@@ -42,10 +46,12 @@ describe('when an activity is saved', function() {
 			});
 			asyncSpecWait();
 		});
+		
 	});
-	
-	describe('with valid performed work added to it', function() {
-		it('should be inserted as well', function() {
+
+	describe('when it is saved with valid performed work added to it', function() {
+		
+		it('the performed work should be inserted in the database as well', function() {
 			var activity = new ActivityBuilder().build();
 			var today = new Date();
 			var yesterday = new Date();
@@ -65,9 +71,11 @@ describe('when an activity is saved', function() {
 			});
 			asyncSpecWait();
 		});
+		
 	});
 	
-	describe('with invalid performed work added to it', function() {
+	describe('when it is saved with invalid performed work added to it', function() {
+
 		it('should cause a validation error', function() {
 			var activity = new ActivityBuilder().build();
 			activity.addPerformedWork(new Date(), 9); // max value is set at 8
@@ -78,10 +86,16 @@ describe('when an activity is saved', function() {
 			});
 			asyncSpecWait();
 		});
+
 	});
 	
-	describe('with all fields filled in', function() {
-		it('should have the same values when retrieved again', function() {
+});
+
+describe('given an existing activity', function() {
+	
+	describe('when it retrieved from the database', function() {
+		
+		it('should contain the same values that have been inserted', function() {
 			var activity = new ActivityBuilder()
 				.asBilled()
 				.build();
@@ -94,8 +108,7 @@ describe('when an activity is saved', function() {
 			});
 			asyncSpecWait();
 		});
+		
 	});
-});
-
-mongoose.connection.collection('activities').drop();
 	
+});
