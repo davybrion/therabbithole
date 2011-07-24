@@ -103,19 +103,18 @@ describe('given a new activity', function() {
 });
 
 describe('given an existing activity', function() {
-	
-	describe('when it retrieved from the database', function() {
+
+	var activity = new ActivityBuilder()
+		.asBilled()
+		.build();
+	activity.save();
+
+	describe('when it is retrieved from the database', function() {
 		
 		it('should contain the same values that have been inserted', function() {
-			var activity = new ActivityBuilder()
-				.asBilled()
-				.build();
-
-			activity.save(function(err) {
-				Activity.findById(activity.id, function(err, result) {
-					helper.activitiesShouldBeEqual(result, activity);
-					asyncSpecDone();
-				});
+			Activity.findById(activity.id, function(err, result) {
+				helper.activitiesShouldBeEqual(result, activity);
+				asyncSpecDone();
 			});
 			asyncSpecWait();
 		});

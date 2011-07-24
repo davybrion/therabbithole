@@ -53,22 +53,21 @@ describe('given a new customer', function() {
 });
 
 describe('given an existing customer', function() {
-	
+
+	var customer = new CustomerBuilder()
+		.withAddress({ street: 'some street', city: 'some city', postalCode: '1234', country: 'some country' })
+		.withPhoneNumber('123456789')
+		.withContact({ name: 'some name', email: 'some.email@gmail.com' })
+		.withIncludeContactOnInvoice()
+		.build();
+	customer.save();
+
 	describe('when it is retrieved from the database', function() {
 	
 		it('should contain the same values that have been inserted', function() {
-			var customer = new CustomerBuilder()
-				.withAddress({ street: 'some street', city: 'some city', postalCode: '1234', country: 'some country' })
-				.withPhoneNumber('123456789')
-				.withContact({ name: 'some name', email: 'some.email@gmail.com' })
-				.withIncludeContactOnInvoice()
-				.build();
-			
-			customer.save(function(err) {
-				Customer.findById(customer.id, function(err, result) {
-					helper.customersShouldBeEqual(result, customer);					
-					asyncSpecDone();
-				});
+			Customer.findById(customer.id, function(err, result) {
+				helper.customersShouldBeEqual(result, customer);					
+				asyncSpecDone();
 			});
 			asyncSpecWait();
 		});
