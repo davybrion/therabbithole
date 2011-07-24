@@ -76,12 +76,23 @@ describe('given a new activity', function() {
 	
 	describe('when it is saved with invalid performed work added to it', function() {
 
-		it('should cause a validation error', function() {
+		it('should cause a max value validation error if the number of hours is too large', function() {
 			var activity = new ActivityBuilder().build();
-			activity.addPerformedWork(new Date(), 9); // max value is set at 8
+			activity.addPerformedWork(new Date(), 17); // max value is set at 17
 			activity.save(function(err) {
 				expect(err).not.toBeNull();
 				expect(err).toHaveMaxValidationErrorFor('hours');
+				asyncSpecDone();
+			});
+			asyncSpecWait();
+		});
+
+		it('should cause a min value validation error if the number of hours is too small', function() {
+			var activity = new ActivityBuilder().build();
+			activity.addPerformedWork(new Date(), 0); // min value is 1
+			activity.save(function(err) {
+				expect(err).not.toBeNull();
+				expect(err).toHaveMinValidationErrorFor('hours');
 				asyncSpecDone();
 			});
 			asyncSpecWait();

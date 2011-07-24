@@ -12,8 +12,13 @@ beforeEach(function() {
 			toHaveRequiredValidationErrorFor : function(propertyName) {
 				return toHaveValidationErrorFor(this.actual, 'required', propertyName);
 			},
+			
 			toHaveMaxValidationErrorFor: function(propertyName) {
 				return toHaveValidationErrorFor(this.actual, 'max', propertyName);
+			},
+			
+			toHaveMinValidationErrorFor: function(propertyName) {
+				return toHaveValidationErrorFor(this.actual, 'min', propertyName);
 			}
 		};
 	}()));
