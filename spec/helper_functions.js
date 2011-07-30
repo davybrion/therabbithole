@@ -26,11 +26,20 @@ module.exports = {
 		this.contactsShouldBeEqual(customer1.contact, customer2.contact);
 	},
 
+	performedWorkShouldBeEqual: function(performedWorkArray1, performedWorkArray2) {
+		var i, lenght;
+		expect(performedWorkArray1.length).toEqual(performedWorkArray2.length);
+		for (i = 0, length = performedWorkArray1.length; i < length; i++) {
+			expect(performedWorkArray1[i].date).toEqual(performedWorkArray2[i].date);
+			expect(performedWorkArray1[i].hours).toEqual(performedWorkArray2[i].hours);
+		}
+	},
+
 	activitiesShouldBeEqual: function(activity1, activity2) {
 		expect(activity1.customer).toEqual(activity2.customer);
 		expect(activity1.description).toEqual(activity2.description);
 		expect(activity1.billed).toEqual(activity2.billed);
 		expect(activity1.hourlyRate.toFixed()).toEqual(activity2.hourlyRate.toFixed());
-		// TODO: add check for performedWork!
+		this.performedWorkShouldBeEqual(activity1.performedWork, activity2.performedWork);
 	}
 };

@@ -162,5 +162,50 @@ describe('given an existing activity', function() {
 		});
 		
 	});
+
+	describe('when it is modified and updated', function() {
+			
+		beforeEach(function() {
+			activity.customer = '4e25937456436de850000007';
+			activity.description = 'some other cool project';
+			activity.hourlyRate = 77;
+			activity.billed = false;
+			activity.performedWork = [];
+			activity.save(function(err) {
+				expect(err).toBeNull();
+				asyncSpecDone();
+			});
+			asyncSpecWait();
+		});
+
+		it('contains the updated values in the database', function() {
+			Activity.findById(activity.id, function(err, result) {
+				helper.activitiesShouldBeEqual(result, activity);
+				asyncSpecDone();
+			});
+			asyncSpecWait();
+		});
+
+	});
+
+	describe('when it is deleted', function() {
+		
+		beforeEach(function() {
+			activity.remove(function(err) {
+				expect(err).toBeNull();
+				asyncSpecDone();
+			});
+			asyncSpecWait();
+		});		
+
+		it('can no longer be retrieved', function() {
+			Activity.findById(activity.id, function(err, result) {
+				expect(result).toBeNull();
+				asyncSpecDone();
+			});
+			asyncSpecWait();
+		});
+
+	});
 	
 });

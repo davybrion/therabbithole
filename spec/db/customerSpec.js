@@ -101,4 +101,56 @@ describe('given an existing customer', function() {
 		
 	});
 	
+	describe('when it is modified and updated', function() {
+			
+		beforeEach(function() {	
+			customer.name = 'some other customer';
+			customer.vatNumber = '0456.876.235';
+			customer.address = {
+				street: 'some other street',
+				postalCode: '12345',
+				city: 'some other city'
+			};
+			customer.phoneNumber = '123456789';
+			customer.contact = {
+				name: 'some name',
+				email: 'some_email@hotmail.com'
+			};
+			customer.save(function(err) {
+				expect(err).toBeNull();
+				asyncSpecDone();
+			});
+			asyncSpecWait();
+		});
+
+		it('contains the updated values in the database', function() {
+			Customer.findById(customer.id, function(err, result) {
+				helper.customersShouldBeEqual(result, customer);
+				asyncSpecDone();
+			});
+			asyncSpecWait();
+		});
+
+	});
+
+	describe('when it is deleted', function() {
+		
+		beforeEach(function() {
+			customer.remove(function(err) {
+				expect(err).toBeNull();
+				asyncSpecDone();
+			});
+			asyncSpecWait();
+		});		
+
+		it('can no longer be retrieved', function() {
+			Customer.findById(customer.id, function(err, result) {
+				expect(result).toBeNull();
+				asyncSpecDone();
+			});
+			asyncSpecWait();
+		});
+
+	});
+	
 });
