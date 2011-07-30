@@ -8,42 +8,53 @@ mongoose.connection.collection('customers').drop();
 
 describe('given a new customer', function() {
 
+	var customer = null,
+		error = null;
+
+	beforeEach(function() {
+		customer = new CustomerBuilder().build();
+	});
+
 	describe('when it is saved with none of its required fields filled in', function() {
 
-		it('should fail with validation errors for each required field', function() {
-			var customer = new Customer();
+		beforeEach(function() {
+			customer = new Customer(); // the customer reference by default points to a properly filled in instance
 			customer.save(function(err) {
-				expect(err).not.toBeNull();
-				expect(err).toHaveRequiredValidationErrorFor('name');
-				expect(err).toHaveRequiredValidationErrorFor('vatNumber');
-				expect(err).toHaveRequiredValidationErrorFor('address.street');
-				expect(err).toHaveRequiredValidationErrorFor('address.postalCode');
-				expect(err).toHaveRequiredValidationErrorFor('address.city');
+				error = err;
 				asyncSpecDone();
 			});
 			asyncSpecWait();
+		});
+
+		it('should fail with validation errors for each required field', function() {
+			expect(error).not.toBeNull();
+			expect(error).toHaveRequiredValidationErrorFor('name');
+			expect(error).toHaveRequiredValidationErrorFor('vatNumber');
+			expect(error).toHaveRequiredValidationErrorFor('address.street');
+			expect(error).toHaveRequiredValidationErrorFor('address.postalCode');
+			expect(error).toHaveRequiredValidationErrorFor('address.city');
 		});
 
 	});
 
 	describe('when it is saved with all of its required fields filled in', function() {
 
-		it('should not fail', function() {
-			var customer = new CustomerBuilder().build();
+		beforeEach(function(err) {
 			customer.save(function(err) {
-				expect(err).toBeNull();
+				error = err;
 				asyncSpecDone();
 			});
 			asyncSpecWait();
 		});
 
+		it('should not fail', function() {
+			expect(error).toBeNull();
+		});
+
 		it('should contain a default false value for includeContactOnInvoice', function() {
-			var customer = new CustomerBuilder().build();
-			customer.save(function(err) {
-				Customer.findById(customer.id, function(err, result) {
-					expect(result.includeContactOnInvoice).toBe(false);
-					asyncSpecDone();
-				});
+			Customer.findById(customer.id, function(err, result) {
+				expect(result.includeContactOnInvoice).toBe(false);
+				asyncSpecDone();
 			});
 			asyncSpecWait();
 		});
@@ -54,22 +65,38 @@ describe('given a new customer', function() {
 
 describe('given an existing customer', function() {
 
-	var customer = new CustomerBuilder()
-		.withAddress({ street: 'some street', city: 'some city', postalCode: '1234', country: 'some country' })
-		.withPhoneNumber('123456789')
-		.withContact({ name: 'some name', email: 'some.email@gmail.com' })
-		.withIncludeContactOnInvoice()
-		.build();
-	customer.save();
+	var customer = null;
+
+	beforeEach(function(err) {
+		customer = new CustomerBuilder()
+			.withAddress({ street: 'some street', city: 'some city', postalCode: '1234', country: 'some country' })
+			.withPhoneNumber('123456789')
+			.withContact({ name: 'some name', email: 'some.email@gmail.com' })
+			.withIncludeContactOnInvoice()
+			.build();
+			
+		customer.save(function(err) {
+			expect(err).toBeNull();
+			asyncSpecDone();
+		});
+		asyncSpecWait();
+	});
 
 	describe('when it is retrieved from the database', function() {
-	
-		it('should contain the same values that have been inserted', function() {
+
+		var retrievedCustomer = null;
+
+		beforeEach(function() {
 			Customer.findById(customer.id, function(err, result) {
-				helper.customersShouldBeEqual(result, customer);					
+				expect(err).toBeNull();
+				retrievedCustomer = result;
 				asyncSpecDone();
 			});
 			asyncSpecWait();
+		});
+	
+		it('should contain the same values that have been inserted', function() {
+			helper.customersShouldBeEqual(retrievedCustomer, customer);
 		});
 		
 	});
