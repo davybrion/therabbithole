@@ -15,7 +15,3 @@ Technologies that will be used:
 - Backbone.JS
 - QUnit
 - jasmine-node
-
-I'm currently still reading up on Node.JS and MongoDB so it might take a week or two 
-before actual code shows up in this repo :)
-
