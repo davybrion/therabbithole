@@ -150,7 +150,7 @@ describe('given an existing activity', function() {
 
 		beforeEach(function() {
 			Activity.findById(activity.id, function(err, result) {
-				expect(err).toBeNull;
+				expect(err).toBeNull();
 				retrievedActivity = result;
 				asyncSpecDone();
 			});
