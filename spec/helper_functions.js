@@ -52,5 +52,20 @@ module.exports = {
 		expect(company1.iban).toEqual(company2.iban);
 		expect(company1.bic).toEqual(company2.bic);
 		this.addressesShouldBeEqual(company1.address, company2.address);
+	},
+
+	invoicesShouldBeEqual: function(invoice1, invoice2) {
+		expect(invoice1.customerId).toEqual(invoice2.customerId);
+		expect(invoice1.companyId).toEqual(invoice2.companyId);
+		expect(invoice1.invoiceNumber).toEqual(invoice2.invoiceNumber);
+		expect(invoice1.date).toEqual(invoice2.date);
+		expect(invoice1.dueDate).toEqual(invoice2.dueDate);
+		expect(invoice1.paid).toEqual(invoice2.paid);
+		expect(invoice1.activityId).toEqual(invoice2.activityId);
+		expect(invoice1.totalHours.toFixed()).toEqual(invoice2.totalHours.toFixed());
+		expect(invoice1.hourlyRate.toFixed()).toEqual(invoice2.hourlyRate.toFixed());
+		expect(invoice1.totalExcludingVat.toFixed()).toEqual(invoice2.totalExcludingVat.toFixed());
+		expect(invoice1.vat.toFixed()).toEqual(invoice2.vat.toFixed());
+		expect(invoice1.totalIncludingVat.toFixed()).toEqual(invoice2.totalIncludingVat.toFixed());	
 	}
 };
