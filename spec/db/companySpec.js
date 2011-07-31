@@ -147,22 +147,3 @@ describe('given an existing company', function() {
 	});
 
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
