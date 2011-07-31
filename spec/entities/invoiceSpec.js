@@ -22,10 +22,10 @@ describe('given an invoice created with a totalExcludingVat value', function() {
 	var invoice = new Invoice({ totalExcludingVat: 1000 });
 
 	it('should contain the correct vat value', function() {
-			expect(invoice.vat).toEqual(210);
+		expect(invoice.vat).toEqual(210);
 	});
 
 	it('should contain the correct totalIncludingVat property', function() {
-			expect(invoice.totalIncludingVat).toEqual(1210);
+		expect(invoice.totalIncludingVat).toEqual(1210);
 	});
 });
