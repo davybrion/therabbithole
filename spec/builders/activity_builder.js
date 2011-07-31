@@ -1,7 +1,7 @@
 var Activity = require('../../lib/entities').Activity;
 
 var ActivityBuilder = function() {
-	this.customer = '4e25937456436de850000006'; // should be a valid ObjectId (not an existing one, just valid in form) 
+	this.customerId = '4e25937456436de850000006'; // should be a valid ObjectId (not an existing one, just valid in form) 
 	this.description = "some cool project";
 	this.hourlyRate = 75;
 };
@@ -9,7 +9,7 @@ var ActivityBuilder = function() {
 var prototype = ActivityBuilder.prototype;
 
 prototype.withCustomerId = function(customerId) {
-	this.customer = customerId;
+	this.customerId = customerId;
 	return this;
 };
 
@@ -30,7 +30,7 @@ prototype.asBilled = function() {
 
 prototype.build = function() {
 	var activity = new Activity({
-		customer: this.customer,
+		customerId: this.customerId,
 		description: this.description,
 		hourlyRate: this.hourlyRate
 	});

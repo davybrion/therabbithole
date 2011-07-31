@@ -28,7 +28,7 @@ describe('given a new activity', function() {
 
 		it('should fail with validation errors for each required field', function() {
 			expect(error).not.toBeNull();
-			expect(error).toHaveRequiredValidationErrorFor('customer');
+			expect(error).toHaveRequiredValidationErrorFor('customerId');
 			expect(error).toHaveRequiredValidationErrorFor('description');
 			expect(error).toHaveRequiredValidationErrorFor('hourlyRate');
 		});
@@ -166,7 +166,7 @@ describe('given an existing activity', function() {
 	describe('when it is modified and updated', function() {
 			
 		beforeEach(function() {
-			activity.customer = '4e25937456436de850000007';
+			activity.customerId = '4e25937456436de850000007';
 			activity.description = 'some other cool project';
 			activity.hourlyRate = 77;
 			activity.billed = false;

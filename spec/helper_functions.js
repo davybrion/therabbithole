@@ -36,7 +36,7 @@ module.exports = {
 	},
 
 	activitiesShouldBeEqual: function(activity1, activity2) {
-		expect(activity1.customer).toEqual(activity2.customer);
+		expect(activity1.customerId).toEqual(activity2.customerId);
 		expect(activity1.description).toEqual(activity2.description);
 		expect(activity1.billed).toEqual(activity2.billed);
 		expect(activity1.hourlyRate.toFixed()).toEqual(activity2.hourlyRate.toFixed());
