@@ -1,5 +1,5 @@
 var mongoose = require('mongoose'),
-	Customer = require('../../lib/entities.js').Customer,
+	Customer = require('../../lib/entities').Customer,
 	CustomerBuilder = require('../builders/customer_builder.js'),
 	helper = require('../helper_functions.js');
 

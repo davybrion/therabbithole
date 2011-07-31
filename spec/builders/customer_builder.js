@@ -1,4 +1,4 @@
-var Customer = require('../../lib/entities.js').Customer;
+var Customer = require('../../lib/entities').Customer;
 
 var CustomerBuilder = function() {
 	this.name = 'some customer';

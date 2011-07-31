@@ -1,5 +1,5 @@
 var mongoose = require('mongoose'),
-	Activity = require('../../lib/entities.js').Activity,
+	Activity = require('../../lib/entities').Activity,
 	ActivityBuilder = require('../builders/activity_builder.js'),
 	helper = require('../helper_functions.js');
 	
