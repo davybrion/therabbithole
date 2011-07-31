@@ -1,6 +1,7 @@
 var Invoice = require('../../lib/entities').Invoice;
 
 describe('given an invoice', function() {
+
 	var invoice = new Invoice();
 
 	describe('when you set its totalExcludingVat property', function() {
@@ -19,6 +20,7 @@ describe('given an invoice', function() {
 });
 
 describe('given an invoice created with a totalExcludingVat value', function() {
+
 	var invoice = new Invoice({ totalExcludingVat: 1000 });
 
 	it('should contain the correct vat value', function() {
