@@ -1,25 +1,25 @@
 var mongoose = require('mongoose'),
-	Customer = require('../../lib/entities').Customer,
-	CustomerBuilder = require('../builders/customer_builder.js'),
+	Company = require('../../lib/entities').Company,
+	CompanyBuilder = require('../builders/company_builder.js'),
 	helper = require('../helper_functions.js');
 
 mongoose.connect('mongodb://localhost/therabbithole_test');
-mongoose.connection.collection('customers').drop();
+mongoose.connection.collection('companies').drop();
 
-describe('given a new customer', function() {
-
-	var customer = null,
+describe('given a new company', function() {
+	
+	var company = null,
 		error = null;
-
+	
 	beforeEach(function() {
-		customer = new CustomerBuilder().build();
+		company = new CompanyBuilder().build();
 	});
 
 	describe('when it is saved with none of its required fields filled in', function() {
-
+		
 		beforeEach(function() {
-			customer = new Customer(); // the customer reference by default points to a properly filled in instance
-			customer.save(function(err) {
+			company = new Company(); // the company reference by default points to a properly filled in instance
+			company.save(function(err) {
 				error = err;
 				asyncSpecDone();
 			});
@@ -29,18 +29,23 @@ describe('given a new customer', function() {
 		it('should fail with validation errors for each required field', function() {
 			expect(error).not.toBeNull();
 			expect(error).toHaveRequiredValidationErrorFor('name');
-			expect(error).toHaveRequiredValidationErrorFor('vatNumber');
 			expect(error).toHaveRequiredValidationErrorFor('address.street');
 			expect(error).toHaveRequiredValidationErrorFor('address.postalCode');
 			expect(error).toHaveRequiredValidationErrorFor('address.city');
+			expect(error).toHaveRequiredValidationErrorFor('phoneNumber');
+			expect(error).toHaveRequiredValidationErrorFor('email');
+			expect(error).toHaveRequiredValidationErrorFor('vatNumber');
+			expect(error).toHaveRequiredValidationErrorFor('bankAccount');
+			expect(error).toHaveRequiredValidationErrorFor('iban');
+			expect(error).toHaveRequiredValidationErrorFor('bic');
 		});
 
 	});
 
 	describe('when it is saved with all of its required fields filled in', function() {
-
+		
 		beforeEach(function() {
-			customer.save(function(err) {
+			company.save(function(err) {
 				error = err;
 				asyncSpecDone();
 			});
@@ -51,69 +56,60 @@ describe('given a new customer', function() {
 			expect(error).toBeNull();
 		});
 
-		it('should contain a default false value for includeContactOnInvoice', function() {
-			Customer.findById(customer.id, function(err, result) {
-				expect(result.includeContactOnInvoice).toBe(false);
-				asyncSpecDone();
-			});
-			asyncSpecWait();
-		});
-
 	});
 
 });
 
-describe('given an existing customer', function() {
+describe('given an existing company', function() {
 
-	var customer = null;
+	var company = null;
 
-	beforeEach(function(err) {
-		customer = new CustomerBuilder()
-			.withIncludeContactOnInvoice()
-			.build();
-			
-		customer.save(function(err) {
+	beforeEach(function() {
+		company = new CompanyBuilder().build();
+		company.save(function(err) {
 			expect(err).toBeNull();
 			asyncSpecDone();
 		});
 		asyncSpecWait();
 	});
-
+	
 	describe('when it is retrieved from the database', function() {
-
-		var retrievedCustomer = null;
+		
+		var retrievedCompany = null;
 
 		beforeEach(function() {
-			Customer.findById(customer.id, function(err, result) {
+			Company.findById(company.id, function(err, result) {
 				expect(err).toBeNull();
-				retrievedCustomer = result;
+				retrievedCompany = result;
 				asyncSpecDone();
 			});
 			asyncSpecWait();
 		});
-	
+
 		it('should contain the same values that have been inserted', function() {
-			helper.customersShouldBeEqual(retrievedCustomer, customer);
+			helper.companiesShouldBeEqual(retrievedCompany, company);
 		});
-		
+
 	});
-	
+
 	describe('when it is modified and updated', function() {
-			
-		beforeEach(function() {	
-			customer.name = 'some other customer';
-			customer.vatNumber = '0456.876.235';
-			customer.address = {
+		
+		beforeEach(function() {
+			company.name = 'some other company';
+			company.address = {
 				street: 'some other street',
 				postalCode: '12345',
-				city: 'some other city'
+				city: 'some other city',
+				country: 'some other country'
 			};
-			customer.phoneNumber = '123456789';
-			customer.contact = {
-				name: 'some name',
-				email: 'some_email@hotmail.com'
-			};
-			customer.save(function(err) {
+			company.phoneNumber = '987654321';
+			company.email = 'ssdfadjf@d;kfj.com';
+			company.vatNumber = '111111';
+			company.bankAccount = '222222';
+			company.iban = '87654';
+			company.bic = 'bic';
+
+			company.save(function(err) {
 				expect(err).toBeNull();
 				asyncSpecDone();
 			});
@@ -121,8 +117,8 @@ describe('given an existing customer', function() {
 		});
 
 		it('contains the updated values in the database', function() {
-			Customer.findById(customer.id, function(err, result) {
-				helper.customersShouldBeEqual(result, customer);
+			Company.findById(company.id, function(err, result) {
+				helper.companiesShouldBeEqual(result, company);
 				asyncSpecDone();
 			});
 			asyncSpecWait();
@@ -133,7 +129,7 @@ describe('given an existing customer', function() {
 	describe('when it is deleted', function() {
 		
 		beforeEach(function() {
-			customer.remove(function(err) {
+			company.remove(function(err) {
 				expect(err).toBeNull();
 				asyncSpecDone();
 			});
@@ -141,7 +137,7 @@ describe('given an existing customer', function() {
 		});		
 
 		it('can no longer be retrieved', function() {
-			Customer.findById(customer.id, function(err, result) {
+			Company.findById(company.id, function(err, result) {
 				expect(result).toBeNull();
 				asyncSpecDone();
 			});
@@ -149,5 +145,24 @@ describe('given an existing customer', function() {
 		});
 
 	});
-	
+
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

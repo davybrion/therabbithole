@@ -37,7 +37,7 @@ describe('given a new activity', function() {
 
 	describe('when it is saved with all of its required fields filled in', function() {
 		
-		beforeEach(function(err) {
+		beforeEach(function() {
 			activity.save(function(err) {
 				error = err;
 				asyncSpecDone();

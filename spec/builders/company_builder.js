@@ -1,4 +1,4 @@
-var Company = require('../../entities').Company;
+var Company = require('../../lib/entities').Company;
 
 var CompanyBuilder = function() {
 	this.name = 'some company';

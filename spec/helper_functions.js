@@ -41,5 +41,16 @@ module.exports = {
 		expect(activity1.billed).toEqual(activity2.billed);
 		expect(activity1.hourlyRate.toFixed()).toEqual(activity2.hourlyRate.toFixed());
 		this.performedWorkShouldBeEqual(activity1.performedWork, activity2.performedWork);
+	},
+
+	companiesShouldBeEqual: function(company1, company2) {
+		expect(company1.name).toEqual(company2.name);
+		expect(company1.phoneNumber).toEqual(company2.phoneNumber);
+		expect(company1.email).toEqual(company2.email);
+		expect(company1.vatNumber).toEqual(company2.vatNumber);
+		expect(company1.bankAccount).toEqual(company2.bankAccount);
+		expect(company1.iban).toEqual(company2.iban);
+		expect(company1.bic).toEqual(company2.bic);
+		this.addressesShouldBeEqual(company1.address, company2.address);
 	}
 };
