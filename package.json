@@ -6,7 +6,7 @@
 	"dependencies" :
 	{
 		"jslint" : ">= 0.1.0",
-		"mongoose" : ">= 1.7.4",
+		"mongoose" : ">= 1.8.0",
 		"jasmine-node" : ">= 1.0.6"
 	}
 }
