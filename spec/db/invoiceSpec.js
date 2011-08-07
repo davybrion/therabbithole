@@ -125,8 +125,8 @@ describe('given an existing invoice', function() {
 			invoice.customerId = '4e25937456436de850000008';
 			invoice.activityId = '4e25937456436de850000007';
 			invoice.invoiceNumber = '2011/02';
-			invoice.date = invoice.date.getDate() + 1;
-			invoice.dueDate = invoice.dueDate.getDate() + 1;
+			invoice.date = new Date(invoice.date.getFullYear(), invoice.date.getMonth(), invoice.date.getDate() + 1);
+			invoice.dueDate = new Date(invoice.dueDate.getFullYear(), invoice.dueDate.getMonth(), invoice.dueDate.getDate() + 1);
 			invoice.totalHours = 168;
 			invoice.hourlyRate = 74;
 			invoice.totalExcludingVat = invoice.totalHours * invoice.hourlyRate;
