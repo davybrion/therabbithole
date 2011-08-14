@@ -61,8 +61,8 @@ describe('given a new activity', function() {
 
 	describe('when it is saved with valid performed work added to it', function() {
 
-		var today = new Date();
-		var yesterday = new Date();
+		var today = new Date(),
+			yesterday = new Date();
 		yesterday.setDate(yesterday.getDate() -1);
 
 		beforeEach(function() {
