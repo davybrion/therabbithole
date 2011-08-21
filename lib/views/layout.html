@@ -2,8 +2,13 @@
 	<head>
 		<title>The Rabbit Hole</title>
 		<link rel="stylesheet" href="/style.css" type="text/css" media="all">
+		<script type="text/javascript" src="/scripts/jquery-1.6.2.js"></script>
+		<% for (var i in scripts) { %>
+			<script src="<%= scripts[i] %>"></script>
+		<% } %>
 	</head>
-  <body>
-    <%- body %>
-  </body>
+	<body>
+		<%- messages() %>
+		<%- body %>
+	</body>
 </html>

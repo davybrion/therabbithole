@@ -1,0 +1,31 @@
+label
+{
+	width: 8em;
+	float: left;
+	text-align: right;
+	margin-right: 0.5em;
+}
+
+input[type="text"]
+{
+	width: 25em;
+}
+
+fieldset
+{
+	border: 1px solid;
+	width: 40em;
+}
+
+legend
+{
+	border: 1px solid;
+	padding: 2px 6px;
+}
+
+label.error 
+{ 
+	float: none; 
+	color: red; 
+	padding-left: .5em; 
+}

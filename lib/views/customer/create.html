@@ -1,0 +1,57 @@
+<% page.title = 'Create a new customer' %>
+<% script('/scripts/jquery.validate.js') %>
+
+<script>
+	$(function() {
+		$('#detail_form').validate();
+	});
+</script>
+
+<form action="/customer/" method="post" id="detail_form">
+	<fieldset>
+		<legend>Customer details:</legend>
+		<p>
+			<label for="customer[name]">Name *</label>
+			<input type="text" name="customer[name]" class="required" />
+		</p>
+		<p>
+			<label for="customer[address][street]">Street *</label>
+			<input type="text" name="customer[address][street]" class="required" />
+		</p>
+		<p>
+			<label for="customer[address][postalCode]">Postalcode *</label>
+			<input type="text" name="customer[address][postalCode]" class="required" />
+		</p>
+		<p>
+			<label for="customer[address][city]">City *</label>
+			<input type="text" name="customer[address][city]" class="required" />
+		</p>
+		<p>
+			<label for="customer[address][country]">Country</label>
+			<input type="text" name="customer[address][country]" />
+		</p>
+		<p>
+			<label for="customer[phoneNumber]">Phone number</label>
+			<input type="text" name="customer[phoneNumber]" />
+		</p>
+		<p>
+			<label for="customer[vatNumber]">VAT number *</label>
+			<input type="text" name="customer[vatNumber]" class="required" />
+		</p>
+		<p>
+			<label for="customer[contact][name]">Contact name</label>
+			<input type="text" name="customer[contact][name]" />
+		</p>
+		<p>
+			<label for="customer[contact][email]">Contact email address</label>
+			<input type="text" name="customer[contact][email]" />
+		</p>
+		<p>
+			<label for="customer[includeContactOnInvoice]">Include contact on invoice?</label>
+			<input type="checkbox" name="customer[includeContactOnInvoice]" />
+		</p>
+		<p>
+			<input type="submit" value="Save" />
+		</p>
+	</fieldset>
+</form>

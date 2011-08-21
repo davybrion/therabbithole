@@ -1,9 +1,14 @@
-Features
+In Progress
+-------------------
+- Create Customer
+		- UI testing still needs to be done
+		- route testing ?
+
+Backlog
 -------------------
 
 - Edit Company Info
 - View Customers
-- Create Customer
 - Edit Customer
 - Delete Customer
 		should only be allowed if no activities have been created for the customer
@@ -23,3 +28,9 @@ Technical stuff
 - user management
 - authentication
 - authorization
+- use minimized versions of script files when in production environment
+
+
+General
+-------------------
+- UI pimping
