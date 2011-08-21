@@ -1,0 +1,23 @@
+Features
+-------------------
+
+- Edit Company Info
+- View Customers
+- Edit/Create Customer
+- Delete Customer
+		should only be allowed if no activities have been created for the customer
+- View Activities
+- Edit/Create Activity
+- Create New Activity Based On Existing Activity
+- Delete Activity
+		should only be allowed if no performed work has been added to the activity
+- Create Invoice
+- Generate PDF for Invoice
+- Generate Timesheet based on Activity
+
+
+Technical stuff
+-------------------
+- user management
+- authentication
+- authorization
