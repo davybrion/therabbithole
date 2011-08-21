@@ -5,9 +5,13 @@
 	"main" : "app.js",
 	"dependencies" :
 	{
-		"node-jslint-all" : ">= 0.1.0",
 		"mongoose" : ">= 1.8.1",
-		"jasmine-node" : ">= 1.0.6",
-		"express" : ">= 2.4.4"
+		"express" : ">= 2.4.4",
+    "ejs": "0.4.2"
+	},
+	"devDependencies" :
+	{
+		"node-jslint-all" : ">= 0.1.0",
+		"jasmine-node" : ">= 1.0.6"
 	}
 }
