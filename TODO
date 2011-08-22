@@ -3,12 +3,12 @@ In Progress
 - Create Customer
 		- UI testing still needs to be done
 		- route testing ?
+- View Customers
 
 Backlog
 -------------------
 
 - Edit Company Info
-- View Customers
 - Edit Customer
 - Delete Customer
 		should only be allowed if no activities have been created for the customer
