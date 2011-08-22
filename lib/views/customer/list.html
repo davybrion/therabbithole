@@ -2,6 +2,6 @@
 
 <div id="customerList">
 <% customers.forEach(function(customer) { %>
-	<p><%= customer.name %> </p>
+	<p><%= customer.name %>  <a href="<%= '/customer/' + customer.id %>">Details</a></p>
 <% }); %>
 </div>

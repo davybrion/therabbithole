@@ -4,6 +4,8 @@ In Progress
 		- UI testing still needs to be done
 		- route testing ?
 - View Customers
+		- UI testing still needs to be done
+		- route testing ?
 
 Backlog
 -------------------
@@ -29,6 +31,7 @@ Technical stuff
 - authentication
 - authorization
 - use minimized versions of script files when in production environment
+- clean up error handling: try to remove these calls: if (err) { return next(err); };
 
 
 General
