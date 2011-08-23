@@ -3,21 +3,22 @@ var mongooseInit = require('../../lib/mongoose_init').connect('mongodb://localho
 	Customer = require('../../lib/entities/customer'),
 	request = require('request'),
 	http = require('http'),
-	error = null,
-	response = null,
-	responseBody = null;
+	response = null;
 
 function getUrlFor(route) {
 	return 'http://localhost:3000' + route;
 }
 
-function post(route, body) {
-	request.post({ url: getUrlFor(route), json: body }, function(err, res, body) {
-		error = err;
+function sendRequest(method, route, body) {
+	request[method]({ url: getUrlFor(route), json: body }, function(err, res) {
+		expect(err).toBeNull();
 		response = res;
-		responseBody = body;
 		asyncSpecDone();
 	});
+}
+
+function post(route, body) {
+	sendRequest('post', route, body);
 }
 
 describe('post /customer', function() {
@@ -39,13 +40,16 @@ describe('post /customer', function() {
 			asyncSpecWait();
 		});
 
-		it('should not cause any errors', function() {
-			expect(error).toBeNull();
+		afterEach(function() {
+			Customer.remove({ _id: response.body._id}, function(err) {
+				if (err) { console.log(err); }
+				asyncSpecDone();
+			});
+			asyncSpecWait();
 		});
 
 		it('should return 201 with the customer document', function() {
 			expect(response.statusCode).toBe(201);
-			expect(response.body).not.toBeNull();
 			expect(response.body.name).toBe('some name');
 			expect(response.body._id).toBeDefined();
 			expect(response.body._id).not.toBeNull();
@@ -61,4 +65,23 @@ describe('post /customer', function() {
 		});
 
 	});
+
+	describe('when the request contains a customer document with missing required fields', function() {
+
+		beforeEach(function() {
+			post('/customer', {
+				customer: {
+					name: 'some name',
+					vatNumber: '1234567890'
+				}
+			});
+			asyncSpecWait();
+		});
+
+		it('should return 500 with an error message', function() {
+			expect(response.statusCode).toBe(500);
+			expect(response.body).toEqual('Validation failed');
+		});
+	});
+
 });
