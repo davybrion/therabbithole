@@ -13,6 +13,7 @@
 	"devDependencies" :
 	{
 		"node-jslint-all" : ">= 0.2.0",
-		"jasmine-node" : ">= 1.0.6"
+		"jasmine-node" : ">= 1.0.6",
+		"request" : ">= 2.1.0"
 	}
 }
