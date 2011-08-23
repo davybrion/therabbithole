@@ -84,4 +84,27 @@ describe('post /customer', function() {
 		});
 	});
 
+	describe('when the request contains a customer document that already has an id value', function() {
+		beforeEach(function() {
+			post('/customer', {
+				customer: {
+					id: '4e53dd6773a37be113000001',
+					name: 'some name',
+					address: {
+						street: 'some street',
+						postalCode: '1234',
+						city: 'some city'
+					},
+					vatNumber: '1234567890'
+				}
+			});
+			asyncSpecWait();
+		});
+
+		it('should return 412 with an error message', function() {
+			expect(response.statusCode).toBe(412);
+			expect(response.body).toEqual('customer should not have an id value');
+		});
+	});
+
 });
