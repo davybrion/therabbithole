@@ -20,7 +20,7 @@ module.exports = {
 		sendRequest('post', route, body, callback);
 	},
 
-	get: function(route, body, collback) {
-		sendRequest('get', route, body, callback);
+	get: function(route, callback) {
+		sendRequest('get', route, null, callback);
 	}
 };
