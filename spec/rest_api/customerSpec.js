@@ -1,24 +1,14 @@
 var mongooseInit = require('../../lib/mongoose_init').connect('mongodb://localhost/therabbithole_test'),
 	app = require('../../lib/app.js'),
 	Customer = require('../../lib/entities/customer'),
-	request = require('request'),
+	requesthelper = require('./request_helper'),
 	http = require('http'),
 	response = null;
 
-function getUrlFor(route) {
-	return 'http://localhost:3000' + route;
-}
-
-function sendRequest(method, route, body) {
-	request[method]({ url: getUrlFor(route), json: body }, function(err, res) {
-		expect(err).toBeNull();
-		response = res;
-		asyncSpecDone();
-	});
-}
-
-function post(route, body) {
-	sendRequest('post', route, body);
+function handleResponse(err, res) {
+	expect(err).toBeNull();
+	response = res;
+	asyncSpecDone();
 }
 
 describe('post /customer', function() {
@@ -26,7 +16,7 @@ describe('post /customer', function() {
 	describe('when the request contains a customer document with all required fields provided', function() {
 
 		beforeEach(function() {
-			post('/customer', {
+			requesthelper.post('/customer', {
 				customer: {
 					name: 'some name',
 					address: {
@@ -36,7 +26,7 @@ describe('post /customer', function() {
 					},
 					vatNumber: '1234567890'
 				}
-			});
+			}, handleResponse);
 			asyncSpecWait();
 		});
 
@@ -74,7 +64,7 @@ describe('post /customer', function() {
 					name: 'some name',
 					vatNumber: '1234567890'
 				}
-			});
+			}, handleResponse);
 			asyncSpecWait();
 		});
 
@@ -97,7 +87,7 @@ describe('post /customer', function() {
 					},
 					vatNumber: '1234567890'
 				}
-			});
+			}, handleResponse);
 			asyncSpecWait();
 		});
 
