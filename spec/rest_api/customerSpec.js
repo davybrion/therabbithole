@@ -54,6 +54,10 @@ describe('post /customer', function() {
 			asyncSpecWait();
 		});
 
+		it('should contain a valid Location header value pointing to the new customer', function() {
+			expect(response.headers['location']).toBe('http://localhost:3000/customer/' + response.body._id);
+		});
+
 	});
 
 	describe('when the request contains a customer document with missing required fields', function() {
