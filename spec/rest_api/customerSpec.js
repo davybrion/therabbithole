@@ -17,34 +17,36 @@ describe('post /customer', function() {
 	
 	describe('when the request contains a customer document with all required fields provided', function() {
 
+		var customer = {
+			name: 'some name',
+			address: {
+				street: 'some street',
+				postalCode: '1234',
+				city: 'some city'
+			},
+			vatNumber: '1234567890'
+		}; 
+
 		beforeEach(function() {
-			requesthelper.post('/customer', {
-				customer: {
-					name: 'some name',
-					address: {
-						street: 'some street',
-						postalCode: '1234',
-						city: 'some city'
-					},
-					vatNumber: '1234567890'
-				}
-			}, handleResponse);
+			requesthelper.post('/customer', { customer: customer }, handleResponse);
 			asyncSpecWait();
 		});
 
 		afterEach(function() {
 			Customer.remove({ _id: response.body._id}, function(err) {
-				if (err) { console.log(err); }
 				asyncSpecDone();
 			});
 			asyncSpecWait();
 		});
 
-		it('should return 201 with the customer document', function() {
+		it('should have a statuscode of 201', function() {
 			expect(response.statusCode).toBe(201);
-			expect(response.body.name).toBe('some name');
-			expect(response.body._id).toBeDefined();
-			expect(response.body._id).not.toBeNull();
+		});
+
+		it('should have the customer document in the response body', function() {
+			expect(response.body.name).toEqual(customer.name);
+			expect(response.body.address).toEqual(customer.address);
+			expect(response.body.vatNumber).toEqual(customer.vatNumber);
 		});		
 
 		it('should have persisted the document in the database', function() {
@@ -74,8 +76,11 @@ describe('post /customer', function() {
 			asyncSpecWait();
 		});
 
-		it('should return 500 with an error message', function() {
+		it('should have a statuscode of 500', function() {
 			expect(response.statusCode).toBe(500);
+		});
+
+		it('should have an error message in the body', function() {
 			expect(response.body).toEqual('Validation failed');
 		});
 	});
@@ -97,8 +102,11 @@ describe('post /customer', function() {
 			asyncSpecWait();
 		});
 
-		it('should return 412 with an error message', function() {
+		it('should have a statuscode of 412', function() {
 			expect(response.statusCode).toBe(412);
+		});
+
+		it('should have an error message in the body', function() {
 			expect(response.body).toEqual('customer should not have an id value');
 		});
 	});

@@ -5,7 +5,7 @@ function getUrlFor(route) {
 }
 
 function sendRequest(method, route, body, callback) {
-	request[method]({ url: getUrlFor(route), json: body }, function(err, res) {
+	request[method]({ url: getUrlFor(route), json: body }, function(err, res, b) {
 		callback(err, res);
 	});
 }
