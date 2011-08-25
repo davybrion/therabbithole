@@ -28,7 +28,7 @@ describe('post /customer', function() {
 		}; 
 
 		beforeEach(function() {
-			requesthelper.post('/customer', { customer: customer }, handleResponse);
+			requesthelper.post('/customer', customer, handleResponse);
 			asyncSpecWait();
 		});
 
@@ -67,12 +67,7 @@ describe('post /customer', function() {
 	describe('when the request contains a customer document with missing required fields', function() {
 
 		beforeEach(function() {
-			post('/customer', {
-				customer: {
-					name: 'some name',
-					vatNumber: '1234567890'
-				}
-			}, handleResponse);
+			post('/customer', { name: 'some name', vatNumber: '1234567890' }, handleResponse);
 			asyncSpecWait();
 		});
 
@@ -88,16 +83,14 @@ describe('post /customer', function() {
 	describe('when the request contains a customer document that already has an id value', function() {
 		beforeEach(function() {
 			post('/customer', {
-				customer: {
-					id: '4e53dd6773a37be113000001',
-					name: 'some name',
-					address: {
-						street: 'some street',
-						postalCode: '1234',
-						city: 'some city'
-					},
-					vatNumber: '1234567890'
-				}
+				id: '4e53dd6773a37be113000001',
+				name: 'some name',
+				address: {
+					street: 'some street',
+					postalCode: '1234',
+					city: 'some city'
+				},
+				vatNumber: '1234567890'
 			}, handleResponse);
 			asyncSpecWait();
 		});
