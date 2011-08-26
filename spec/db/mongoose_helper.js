@@ -5,7 +5,7 @@ beforeEach(function() {
 			if (err.name !== 'ValidationError') { return false; }
 			var value = err.errors[propertyName];
 			if (!value) { return false; }
-			return (value === 'Validator "' + validatorName + '" failed for path ' + propertyName);
+			return (value.message === 'Validator "' + validatorName + '" failed for path ' + propertyName);
 		};
 				
 		return {
