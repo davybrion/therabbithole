@@ -137,7 +137,7 @@ describe('given a new activity', function() {
 			customer = new CustomerBuilder().build();
 			customer.save(function(err) {
 				expect(err).toBeNull();
-				activity.customer = customer;
+				activity.customer = customer.id;
 				activity.save(function(err) {
 					expect(err).toBeNull();
 					asyncSpecDone();
