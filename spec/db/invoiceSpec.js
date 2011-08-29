@@ -28,12 +28,12 @@ describe('given a new invoice', function() {
 
 		it('should fail with validation errors for each required field', function() {
 			expect(error).not.toBeNull();
-			expect(error).toHaveRequiredValidationErrorFor('companyId');
-			expect(error).toHaveRequiredValidationErrorFor('customerId');
+			expect(error).toHaveRequiredValidationErrorFor('company');
+			expect(error).toHaveRequiredValidationErrorFor('customer');
 			expect(error).toHaveRequiredValidationErrorFor('invoiceNumber');
 			expect(error).toHaveRequiredValidationErrorFor('date');
 			expect(error).toHaveRequiredValidationErrorFor('dueDate');
-			expect(error).toHaveRequiredValidationErrorFor('activityId');
+			expect(error).toHaveRequiredValidationErrorFor('activity');
 			expect(error).toHaveRequiredValidationErrorFor('totalHours');
 			expect(error).toHaveRequiredValidationErrorFor('hourlyRate');
 			expect(error).toHaveRequiredValidationErrorFor('totalExcludingVat');
@@ -121,9 +121,9 @@ describe('given an existing invoice', function() {
 	describe('when it is modified and updated', function() {
 		
 		beforeEach(function() {
-			invoice.companyId = '4e25937456436de850000009';
-			invoice.customerId = '4e25937456436de850000008';
-			invoice.activityId = '4e25937456436de850000007';
+			invoice.company = '4e25937456436de850000009';
+			invoice.customer = '4e25937456436de850000008';
+			invoice.activity = '4e25937456436de850000007';
 			invoice.invoiceNumber = '2011/02';
 			invoice.date = new Date(invoice.date.getFullYear(), invoice.date.getMonth(), invoice.date.getDate() + 1);
 			invoice.dueDate = new Date(invoice.dueDate.getFullYear(), invoice.dueDate.getMonth(), invoice.dueDate.getDate() + 1);

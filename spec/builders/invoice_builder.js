@@ -1,13 +1,13 @@
 var Invoice = require('../../lib/entities').Invoice;
 
 var InvoiceBuilder = function() {
-	this.companyId = '4e25937456436de850000001';
-	this.customerId = '4e25937456436de850000002';
+	this.company = '4e25937456436de850000001';
+	this.customer = '4e25937456436de850000002';
 	this.invoiceNumber = '2011/01';
 	this.date = new Date();
 	this.dueDate = new Date();
 	this.dueDate.setDate(this.date.getDate() + 30);
-	this.activityId = '4e25937456436de850000003';
+	this.activity = '4e25937456436de850000003';
 	this.totalHours = 160;
 	this.hourlyRate = 75;
 	this.totalExcludingVat = this.totalHours * this.hourlyRate;
@@ -15,13 +15,13 @@ var InvoiceBuilder = function() {
 
 var prototype = InvoiceBuilder.prototype;
 
-prototype.withCompanyId = function(companyId) {
-	this.companyId = companyId;
+prototype.withCompany = function(company) {
+	this.company = company;
 	return this;
 };
 
-prototype.withCustomerId = function(customerId) {
-	this.customerId = customerId;
+prototype.withCustomer = function(customer) {
+	this.customer = customer;
 	return this;
 };
 
@@ -40,8 +40,8 @@ prototype.withDueDate = function(dueDate) {
 	return this;
 };
 
-prototype.withActivityId = function(activityId) {
-	this.activityId = activityId;
+prototype.withActivity = function(activity) {
+	this.activity = activity;
 	return this;
 };
 
@@ -67,12 +67,12 @@ prototype.asPaid = function() {
 
 prototype.build = function() {
 	var invoice = new Invoice({
-		companyId: this.companyId,
-		customerId: this.customerId,
+		company: this.company,
+		customer: this.customer,
 		invoiceNumber: this.invoiceNumber,
 		date: this.date,
 		dueDate: this.dueDate,
-		activityId: this.activityId,
+		activity: this.activity,
 		totalHours: this.totalHours,
 		hourlyRate: this.hourlyRate,
 		totalExcludingVat: this.totalExcludingVat
