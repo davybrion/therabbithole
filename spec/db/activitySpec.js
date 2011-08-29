@@ -1,6 +1,8 @@
 var mongoose = require('mongoose'),
 	Activity = require('../../lib/entities').Activity,
+	Customer = require('../../lib/entities').Customer,
 	ActivityBuilder = require('../builders/activity_builder.js'),
+	CustomerBuilder = require('../builders/customer_builder.js'),
 	helper = require('../helper_functions.js');
 	
 mongoose.connect('mongodb://localhost/therabbithole_test');
@@ -123,6 +125,48 @@ describe('given a new activity', function() {
 
 		it('should cause a min value validation error if the number of hours is too small', function() {
 			expect(error).toHaveMinValidationErrorFor('hours');
+		});
+
+	});
+
+	describe('when it is saved with a reference to an existing customer', function() {
+		
+		var customer = null;
+
+		beforeEach(function() {
+			customer = new CustomerBuilder().build();
+			customer.save(function(err) {
+				expect(err).toBeNull();
+				activity.customer = customer;
+				activity.save(function(err) {
+					expect(err).toBeNull();
+					asyncSpecDone();
+				});
+			});
+			asyncSpecWait();
+		});
+
+		describe('and we specify that the customer should be populated when we retrieve the activity', function() {
+			
+			var retrievedActivity = null;
+
+			beforeEach(function() {
+				Activity.findById(activity.id).populate('customer').run(function(err, result) {
+					error = err;
+					retrievedActivity = result;
+					asyncSpecDone();
+				});
+				asyncSpecWait();
+			});
+
+			it('should not fail', function() {
+				expect(error).toBeNull();
+			});
+
+			it('should populate the customer property in the returned activity', function() {
+				helper.customersShouldBeEqual(customer, retrievedActivity.customer);
+			});
+
 		});
 
 	});
