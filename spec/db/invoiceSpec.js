@@ -3,6 +3,8 @@ var mongoose = require('mongoose'),
 	InvoiceBuilder = require('../builders/invoice_builder.js'),
 	Customer = require('../../lib/entities').Customer,
 	CustomerBuilder = require('../builders/customer_builder.js'),
+	Company = require('../../lib/entities').Company,
+	CompanyBuilder = require('../builders/company_builder.js'),
 	helper = require('../helper_functions.js');
 	
 mongoose.connect('mongodb://localhost/therabbithole_test');
@@ -123,6 +125,57 @@ describe('given a new invoice', function() {
 
 			it('should populate the customer property in the returned invoice', function() {
 				helper.customersShouldBeEqual(customer, retrievedInvoice.customer);
+			});
+
+		});
+
+	});
+
+	describe('when it is saved with a reference to an existing company', function() {
+		
+		var company = null;
+
+		beforeEach(function() {
+			company = new CompanyBuilder().build();
+			company.save(function(err) {
+				expect(err).toBeNull();
+				invoice.company = company.id;
+				invoice.save(function(err) {
+					expect(err).toBeNull();
+					asyncSpecDone();
+				});
+			});
+			asyncSpecWait();
+		});
+
+		afterEach(function() {
+			// there's a unique index on invoice.invoiceNumber, if we don't remove it after
+			// each spec, the next insert fails
+			invoice.remove(function(err) {
+				asyncSpecDone();
+			});
+			asyncSpecWait();
+		});
+
+		describe('and we specify that the company should be populated when we retrieve the invoice', function() {
+			
+			var retrievedInvoice = null;
+
+			beforeEach(function() {
+				Invoice.findById(invoice.id).populate('company').run(function(err, result) {
+					error = err;
+					retrievedInvoice = result;
+					asyncSpecDone();
+				});
+				asyncSpecWait();
+			});
+
+			it('should not fail', function() {
+				expect(error).toBeNull();
+			});
+
+			it('should populate the company property in the returned invoice', function() {
+				helper.companiesShouldBeEqual(company, retrievedInvoice.company);
 			});
 
 		});
