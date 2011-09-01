@@ -7,6 +7,7 @@ var mongoose = require('mongoose'),
 	CompanyBuilder = require('../builders/company_builder.js'),
 	Activity = require('../../lib/entities').Activity,
 	ActivityBuilder = require('../builders/activity_builder.js'),
+	mongooseTestHelper = require('./persistence_spec_functions.js'),
 	helper = require('../helper_functions.js');
 	
 mongoose.connect('mongodb://localhost/therabbithole_test');
@@ -82,157 +83,52 @@ describe('given a new invoice', function() {
 
 	});
 
-	describe('when it is saved with a reference to an existing customer', function() {
-		
-		var customer = null;
-
-		beforeEach(function() {
-			customer = new CustomerBuilder().build();
-			customer.save(function(err) {
-				expect(err).toBeNull();
-				invoice.customer = customer.id;
-				invoice.save(function(err) {
-					expect(err).toBeNull();
-					asyncSpecDone();
-				});
-			});
-			asyncSpecWait();
-		});
-
-		afterEach(function() {
-			// there's a unique index on invoice.invoiceNumber, if we don't remove it after
-			// each spec, the next insert fails
-			invoice.remove(function(err) {
-				asyncSpecDone();
-			});
-			asyncSpecWait();
-		});
-
-		describe('and we specify that the customer should be populated when we retrieve the invoice', function() {
-			
-			var retrievedInvoice = null;
-
-			beforeEach(function() {
-				Invoice.findById(invoice.id).populate('customer').run(function(err, result) {
-					error = err;
-					retrievedInvoice = result;
-					asyncSpecDone();
-				});
-				asyncSpecWait();
-			});
-
-			it('should not fail', function() {
-				expect(error).toBeNull();
-			});
-
-			it('should populate the customer property in the returned invoice', function() {
-				helper.customersShouldBeEqual(customer, retrievedInvoice.customer);
-			});
-
-		});
-
+	mongooseTestHelper.create_entity_with_reference_and_check_populate({
+		buildReferenceEntityFn: function() { 
+			return new CustomerBuilder().build(); 
+		},
+		referenceName: 'customer',
+		entityName: 'invoice',
+		getEntityFn: function() {
+			return invoice;
+		},
+		entityModel: Invoice,
+		equalityFn: function(instance1, instance2) {
+			helper.customersShouldBeEqual(instance1, instance2);
+		},
+		remove_entity_in_afterEach: true
 	});
 
-	describe('when it is saved with a reference to an existing company', function() {
-		
-		var company = null;
-
-		beforeEach(function() {
-			company = new CompanyBuilder().build();
-			company.save(function(err) {
-				expect(err).toBeNull();
-				invoice.company = company.id;
-				invoice.save(function(err) {
-					expect(err).toBeNull();
-					asyncSpecDone();
-				});
-			});
-			asyncSpecWait();
-		});
-
-		afterEach(function() {
-			// there's a unique index on invoice.invoiceNumber, if we don't remove it after
-			// each spec, the next insert fails
-			invoice.remove(function(err) {
-				asyncSpecDone();
-			});
-			asyncSpecWait();
-		});
-
-		describe('and we specify that the company should be populated when we retrieve the invoice', function() {
-			
-			var retrievedInvoice = null;
-
-			beforeEach(function() {
-				Invoice.findById(invoice.id).populate('company').run(function(err, result) {
-					error = err;
-					retrievedInvoice = result;
-					asyncSpecDone();
-				});
-				asyncSpecWait();
-			});
-
-			it('should not fail', function() {
-				expect(error).toBeNull();
-			});
-
-			it('should populate the company property in the returned invoice', function() {
-				helper.companiesShouldBeEqual(company, retrievedInvoice.company);
-			});
-
-		});
-
+	mongooseTestHelper.create_entity_with_reference_and_check_populate({
+		buildReferenceEntityFn: function() {
+			return new CompanyBuilder().build();
+		},
+		referenceName: 'company',
+		entityName: 'invoice',
+		getEntityFn: function() {
+			return invoice;
+		},
+		entityModel: Invoice,
+		equalityFn: function(instance1, instance2) {
+			helper.companiesShouldBeEqual(instance1, instance2);
+		},
+		remove_entity_in_afterEach: true
 	});
 
-	describe('when it is saved with a reference to an existing activity', function() {
-		
-		var activity = null;
-
-		beforeEach(function() {
-			activity = new ActivityBuilder().build();
-			activity.save(function(err) {
-				expect(err).toBeNull();
-				invoice.activity = activity.id;
-				invoice.save(function(err) {
-					expect(err).toBeNull();
-					asyncSpecDone();
-				});
-			});
-			asyncSpecWait();
-		});
-
-		afterEach(function() {
-			// there's a unique index on invoice.invoiceNumber, if we don't remove it after
-			// each spec, the next insert fails
-			invoice.remove(function(err) {
-				asyncSpecDone();
-			});
-			asyncSpecWait();
-		});
-
-		describe('and we specify that the company should be populated when we retrieve the invoice', function() {
-			
-			var retrievedInvoice = null;
-
-			beforeEach(function() {
-				Invoice.findById(invoice.id).populate('activity').run(function(err, result) {
-					error = err;
-					retrievedInvoice = result;
-					asyncSpecDone();
-				});
-				asyncSpecWait();
-			});
-
-			it('should not fail', function() {
-				expect(error).toBeNull();
-			});
-
-			it('should populate the activity property in the returned invoice', function() {
-				helper.activitiesShouldBeEqual(activity, retrievedInvoice.activity);
-			});
-
-		});
-
+	mongooseTestHelper.create_entity_with_reference_and_check_populate({
+		buildReferenceEntityFn: function() {
+			return new ActivityBuilder().build();
+		},
+		referenceName: 'activity',
+		entityName: 'invoice',
+		getEntityFn: function() {
+			return invoice;
+		},
+		entityModel: Invoice,
+		equalityFn: function(instance1, instance2) {
+			helper.activitiesShouldBeEqual(instance1, instance2);
+		},
+		remove_entity_in_afterEach: true
 	});
 
 });

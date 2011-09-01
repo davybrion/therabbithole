@@ -3,6 +3,7 @@ var mongoose = require('mongoose'),
 	Customer = require('../../lib/entities').Customer,
 	ActivityBuilder = require('../builders/activity_builder.js'),
 	CustomerBuilder = require('../builders/customer_builder.js'),
+	mongooseTestHelper = require('./persistence_spec_functions.js'),
 	helper = require('../helper_functions.js');
 	
 mongoose.connect('mongodb://localhost/therabbithole_test');
@@ -129,46 +130,19 @@ describe('given a new activity', function() {
 
 	});
 
-	describe('when it is saved with a reference to an existing customer', function() {
-		
-		var customer = null;
-
-		beforeEach(function() {
-			customer = new CustomerBuilder().build();
-			customer.save(function(err) {
-				expect(err).toBeNull();
-				activity.customer = customer.id;
-				activity.save(function(err) {
-					expect(err).toBeNull();
-					asyncSpecDone();
-				});
-			});
-			asyncSpecWait();
-		});
-
-		describe('and we specify that the customer should be populated when we retrieve the activity', function() {
-			
-			var retrievedActivity = null;
-
-			beforeEach(function() {
-				Activity.findById(activity.id).populate('customer').run(function(err, result) {
-					error = err;
-					retrievedActivity = result;
-					asyncSpecDone();
-				});
-				asyncSpecWait();
-			});
-
-			it('should not fail', function() {
-				expect(error).toBeNull();
-			});
-
-			it('should populate the customer property in the returned activity', function() {
-				helper.customersShouldBeEqual(customer, retrievedActivity.customer);
-			});
-
-		});
-
+	mongooseTestHelper.create_entity_with_reference_and_check_populate({
+		buildReferenceEntityFn: function() { 
+			return new CustomerBuilder().build(); 
+		},
+		referenceName: 'customer',
+		entityName: 'activity',
+		getEntityFn: function() {
+			return activity;
+		},
+		entityModel: Activity,
+		equalityFn: function(instance1, instance2) {
+			helper.customersShouldBeEqual(instance1, instance2);
+		},
 	});
 
 });
