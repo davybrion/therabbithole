@@ -5,15 +5,15 @@
 	"main" : "app.js",
 	"dependencies" :
 	{
-		"mongoose" : ">= 2.1",
+		"mongoose" : ">= 2.3.11",
 		"express" : ">= 2.4.4",
-    "ejs": "0.4.2",
-    "express-messages": ">= 0.0.2"
+		"ejs": "0.4.2",
+		"express-messages": ">= 0.0.2"		
 	},
 	"devDependencies" :
 	{
-		"node-jslint-all" : ">= 0.2.0",
-		"jasmine-node" : ">= 1.0.6",
+		"node-jslint-all" : "= 0.2.0",
+		"jasmine-node" : "= 1.0.12",
 		"request" : ">= 2.1.0"
 	}
 }
