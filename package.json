@@ -5,8 +5,8 @@
 	"main" : "app.js",
 	"dependencies" :
 	{
-		"mongoose" : ">= 2.3.11",
-		"express" : ">= 2.4.4",
+		"mongoose" : ">= 2.4.10",
+		"express" : ">= 2.5.6",
 		"ejs": "0.4.2",
 		"express-messages": ">= 0.0.2"		
 	},
