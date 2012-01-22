@@ -1,0 +1,25 @@
+<% page.title = 'Login' %>
+<% script('/scripts/jquery.validate.js') %>
+
+<script>
+	$(function() {
+		$('#login_form').validate();
+	});
+</script>
+
+<form action="/login" method="post" id="login_form">
+	<fieldset>
+		<legend>Credentials:</legend>
+		<p>
+			<label for="username">Username</label>
+			<input type="text" name="username" class="required" />
+		</p>
+		<p>
+			<label for="password">Password</label>
+			<input type="password" name="password" class="required" />
+		</p>
+		<p>
+			<input type="submit" value="Login" />
+		</p>
+	</fieldset>
+</form>

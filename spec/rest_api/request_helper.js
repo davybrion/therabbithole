@@ -10,11 +10,6 @@ function sendRequest(method, route, body, callback) {
 	});
 }
 
-function post(route, body) {
-	sendRequest('post', route, body);
-}
-
-
 module.exports = {
 	post: function(route, body, callback) {
 		sendRequest('post', route, body, callback);

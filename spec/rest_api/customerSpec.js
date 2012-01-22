@@ -4,7 +4,6 @@ var mongooseInit = require('../../lib/mongoose_init').connect('mongodb://localho
 	CustomerBuilder = require('../builders/customer_builder'),
 	requesthelper = require('./request_helper'),
 	entityhelper = require('./../helper_functions'),
-	http = require('http'),
 	response = null;
 
 function handleResponse(err, res) {
@@ -12,6 +11,8 @@ function handleResponse(err, res) {
 	response = res;
 	asyncSpecDone();
 }
+
+require('./auth_helper.js');
 
 describe('post /customer', function() {
 	
