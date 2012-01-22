@@ -67,5 +67,12 @@ module.exports = {
 		expect(invoice1.totalExcludingVat.toFixed()).toEqual(invoice2.totalExcludingVat.toFixed());
 		expect(invoice1.vat.toFixed()).toEqual(invoice2.vat.toFixed());
 		expect(invoice1.totalIncludingVat.toFixed()).toEqual(invoice2.totalIncludingVat.toFixed());	
+	},
+
+	usersShouldBeEqual: function(user1, user2) {
+		expect(user1.name).toEqual(user2.name);
+		expect(user1.email).toEqual(user2.email);
+		expect(user1.salt).toEqual(user2.salt);
+		expect(user1.passwdHash).toEqual(user2.passwdHash);
 	}
 };
