@@ -1,7 +1,9 @@
 var mongoose = require('mongoose'),
 	User = require('../../lib/entities').User,
 	UserBuilder = require('../builders/user_builder.js'),
-	helper = require('../helper_functions.js');
+	should = require('should'),
+	validationHelper = require('./mongoose_validation_helper.js'),
+	equalityHelper = require('../equality_functions.js');
 
 mongoose.connect('mongodb://localhost/therabbithole_test');
 mongoose.connection.collection('users').drop();
@@ -17,46 +19,43 @@ describe('given a new user', function() {
 
 	describe('when it is saved with none of its required fields filled in', function() {
 
-		beforeEach(function() {
+		beforeEach(function(done) {
 			user = new User(); // the user reference by default points to a properly filled in instance
 			user.salt = null; // to avoid the default value
 			user.save(function(err) {
 				error = err;
-				asyncSpecDone();
+				done();
 			});
-			asyncSpecWait();
 		});
 
 		it('should fail with validation errors for each required field', function() {
-			expect(error).not.toBeNull();
-			expect(error).toHaveRequiredValidationErrorFor('name');
-			expect(error).toHaveRequiredValidationErrorFor('email');
-			expect(error).toHaveRequiredValidationErrorFor('salt');
-			expect(error).toHaveRequiredValidationErrorFor('passwdHash');
+			should.exist(error);
+			validationHelper.checkRequiredValidationErrorFor(error, 'name');
+			validationHelper.checkRequiredValidationErrorFor(error, 'email');
+			validationHelper.checkRequiredValidationErrorFor(error, 'salt');
+			validationHelper.checkRequiredValidationErrorFor(error, 'passwdHash');
 		});
 
 	});
 
 	describe('when it is saved with all of its required fields filled in', function() {
 		
-		beforeEach(function() {
+		beforeEach(function(done) {
 			user.save(function(err) {
 				error = err;
-				asyncSpecDone();
+				done();
 			});
-			asyncSpecWait();
 		});
 
-		afterEach(function() {
+		afterEach(function(done) {
 			// there's a unique index on user.name, if we don't remove it after each spec, the next insert fails
 			user.remove(function(err) {
-				asyncSpecDone();
+				done();
 			});
-			asyncSpecWait();
 		});
 
 		it('should not fail', function() {
-			expect(error).toBeNull();
+			should.not.exist(error);
 		});
 
 	});
@@ -67,83 +66,76 @@ describe('given an existing user', function() {
 	
 	var user = null;
 
-	beforeEach(function(err) {
+	beforeEach(function(done) {
 		user = new UserBuilder().build();
 		user.save(function(err) {
-			expect(err).toBeNull();
-			asyncSpecDone();
+			should.not.exist(err);
+			done();
 		});
-		asyncSpecWait();
 	});
 
-	afterEach(function() {
-		if (user.removed) { return; }
+	afterEach(function(done) {
+		if (user.removed) { done(); }
 		user.remove(function(err) {
-			asyncSpecDone();
+			done();
 		});
-		asyncSpecWait();
 	});
 
 	describe('when it is retrieved from the database', function() {
 		
 		var retrievedUser = null;
 
-		beforeEach(function() {
+		beforeEach(function(done) {
 			User.findById(user.id, function(err, result) {
-				expect(err).toBeNull();
+				should.not.exist(err);
 				retrievedUser = result;
-				asyncSpecDone();
+				done();
 			});
-			asyncSpecWait();
 		});
 
 		it('should contain the same values that have been inserted', function() {
-			helper.usersShouldBeEqual(retrievedUser, user);
+			equalityHelper.usersShouldBeEqual(retrievedUser, user);
 		});
 
 	});
 
 	describe('when it is modified and updated', function() {
 		
-		beforeEach(function() {
+		beforeEach(function(done) {
 			user.name = "some user name";
 			user.email = "some email";
 			user.salt = "some salt value";
 			user.passwdHash = "some passwd hash";
 
 			user.save(function(err) {
-				expect(err).toBeNull();
-				asyncSpecDone();
+				should.not.exist(err);
+				done();
 			});
-			asyncSpecWait();
 		});
 
-		it('contains the updated values in the database', function() {
+		it('contains the updated values in the database', function(done) {
 			User.findById(user.id, function(err, result) {
-				helper.usersShouldBeEqual(result, user);
-				asyncSpecDone();
+				equalityHelper.usersShouldBeEqual(result, user);
+				done();
 			});
-			asyncSpecWait();
 		});
 	});
 
 	describe('when it is deleted', function() {
 		
-		beforeEach(function() {
+		beforeEach(function(done) {
 			user.remove(function(err) {
 				user.removed = true; // HACK: to avoid double removal in afterEach of parent suite
-				expect(err).toBeNull();
-				asyncSpecDone();
+				should.not.exist(err);
+				done();
 			});
-			asyncSpecWait();
 		});
 
-		it('can no longer be retrieved', function() {
+		it('can no longer be retrieved', function(done) {
 			User.findById(user.id, function(err, result) {
-				expect(result).toBeNull();
-				asyncSpecDone();
+				should.not.exist(result);
+				done();
 			});
-			asyncSpecWait();
 		});
 
 	});

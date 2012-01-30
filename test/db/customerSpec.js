@@ -1,7 +1,9 @@
 var mongoose = require('mongoose'),
 	Customer = require('../../lib/entities').Customer,
 	CustomerBuilder = require('../builders/customer_builder.js'),
-	helper = require('../helper_functions.js');
+	should = require('should'),
+	validationHelper = require('./mongoose_validation_helper.js'),
+	equalityHelper = require('../equality_functions.js');
 
 mongoose.connect('mongodb://localhost/therabbithole_test');
 mongoose.connection.collection('customers').drop();
@@ -17,46 +19,43 @@ describe('given a new customer', function() {
 
 	describe('when it is saved with none of its required fields filled in', function() {
 
-		beforeEach(function() {
+		beforeEach(function(done) {
 			customer = new Customer(); // the customer reference by default points to a properly filled in instance
 			customer.save(function(err) {
 				error = err;
-				asyncSpecDone();
+				done();
 			});
-			asyncSpecWait();
 		});
 
 		it('should fail with validation errors for each required field', function() {
-			expect(error).not.toBeNull();
-			expect(error).toHaveRequiredValidationErrorFor('name');
-			expect(error).toHaveRequiredValidationErrorFor('vatNumber');
-			expect(error).toHaveRequiredValidationErrorFor('address.street');
-			expect(error).toHaveRequiredValidationErrorFor('address.postalCode');
-			expect(error).toHaveRequiredValidationErrorFor('address.city');
+			should.exist(error);
+			validationHelper.checkRequiredValidationErrorFor(error, 'name');
+			validationHelper.checkRequiredValidationErrorFor(error, 'vatNumber');
+			validationHelper.checkRequiredValidationErrorFor(error, 'address.street');
+			validationHelper.checkRequiredValidationErrorFor(error, 'address.postalCode');
+			validationHelper.checkRequiredValidationErrorFor(error, 'address.city');
 		});
 
 	});
 
 	describe('when it is saved with all of its required fields filled in', function() {
 
-		beforeEach(function() {
+		beforeEach(function(done) {
 			customer.save(function(err) {
 				error = err;
-				asyncSpecDone();
+				done();
 			});
-			asyncSpecWait();
 		});
 
 		it('should not fail', function() {
-			expect(error).toBeNull();
+			should.not.exist(error);
 		});
 
-		it('should contain a default false value for includeContactOnInvoice', function() {
+		it('should contain a default false value for includeContactOnInvoice', function(done) {
 			Customer.findById(customer.id, function(err, result) {
-				expect(result.includeContactOnInvoice).toBe(false);
-				asyncSpecDone();
+				result.includeContactOnInvoice.should.be.false;
+				done();
 			});
-			asyncSpecWait();
 		});
 
 	});
@@ -67,40 +66,38 @@ describe('given an existing customer', function() {
 
 	var customer = null;
 
-	beforeEach(function(err) {
+	beforeEach(function(done) {
 		customer = new CustomerBuilder()
 			.withIncludeContactOnInvoice()
 			.build();
 			
 		customer.save(function(err) {
-			expect(err).toBeNull();
-			asyncSpecDone();
+			should.not.exist(err);
+			done();
 		});
-		asyncSpecWait();
 	});
 
 	describe('when it is retrieved from the database', function() {
 
 		var retrievedCustomer = null;
 
-		beforeEach(function() {
+		beforeEach(function(done) {
 			Customer.findById(customer.id, function(err, result) {
-				expect(err).toBeNull();
+				should.not.exist(err);
 				retrievedCustomer = result;
-				asyncSpecDone();
+				done();
 			});
-			asyncSpecWait();
 		});
 	
 		it('should contain the same values that have been inserted', function() {
-			helper.customersShouldBeEqual(retrievedCustomer, customer);
+			equalityHelper.customersShouldBeEqual(retrievedCustomer, customer);
 		});
 		
 	});
 	
 	describe('when it is modified and updated', function() {
 			
-		beforeEach(function() {	
+		beforeEach(function(done) {	
 			customer.name = 'some other customer';
 			customer.vatNumber = '0456.876.235';
 			customer.address = {
@@ -114,38 +111,34 @@ describe('given an existing customer', function() {
 				email: 'some_email@hotmail.com'
 			};
 			customer.save(function(err) {
-				expect(err).toBeNull();
-				asyncSpecDone();
+				should.not.exist(err);
+				done();
 			});
-			asyncSpecWait();
 		});
 
-		it('contains the updated values in the database', function() {
+		it('contains the updated values in the database', function(done) {
 			Customer.findById(customer.id, function(err, result) {
-				helper.customersShouldBeEqual(result, customer);
-				asyncSpecDone();
+				equalityHelper.customersShouldBeEqual(result, customer);
+				done();
 			});
-			asyncSpecWait();
 		});
 
 	});
 
 	describe('when it is deleted', function() {
 		
-		beforeEach(function() {
+		beforeEach(function(done) {
 			customer.remove(function(err) {
-				expect(err).toBeNull();
-				asyncSpecDone();
+				should.not.exist(err);
+				done();
 			});
-			asyncSpecWait();
 		});		
 
-		it('can no longer be retrieved', function() {
+		it('can no longer be retrieved', function(done) {
 			Customer.findById(customer.id, function(err, result) {
-				expect(result).toBeNull();
-				asyncSpecDone();
+				should.not.exist(result);
+				done();
 			});
-			asyncSpecWait();
 		});
 
 	});

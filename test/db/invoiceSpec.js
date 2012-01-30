@@ -7,8 +7,10 @@ var mongoose = require('mongoose'),
 	CompanyBuilder = require('../builders/company_builder.js'),
 	Activity = require('../../lib/entities').Activity,
 	ActivityBuilder = require('../builders/activity_builder.js'),
+	should = require('should'),
 	mongooseTestHelper = require('./persistence_spec_functions.js'),
-	helper = require('../helper_functions.js');
+	validationHelper = require('./mongoose_validation_helper.js'),
+	equalityHelper = require('../equality_functions.js');
 	
 mongoose.connect('mongodb://localhost/therabbithole_test');
 mongoose.connection.collection('invoices').drop();
@@ -24,61 +26,57 @@ describe('given a new invoice', function() {
 
 	describe('when it is saved with none of its required fields filled in', function() {
 		
-		beforeEach(function() {
+		beforeEach(function(done) {
 			invoice = new Invoice(); // the invoice reference by default points to a properly filled in instance
 			invoice.save(function(err) {
 				error = err;
-				asyncSpecDone();
+				done();
 			});
-			asyncSpecWait();
 		});
 
 		it('should fail with validation errors for each required field', function() {
-			expect(error).not.toBeNull();
-			expect(error).toHaveRequiredValidationErrorFor('company');
-			expect(error).toHaveRequiredValidationErrorFor('customer');
-			expect(error).toHaveRequiredValidationErrorFor('invoiceNumber');
-			expect(error).toHaveRequiredValidationErrorFor('date');
-			expect(error).toHaveRequiredValidationErrorFor('dueDate');
-			expect(error).toHaveRequiredValidationErrorFor('activity');
-			expect(error).toHaveRequiredValidationErrorFor('totalHours');
-			expect(error).toHaveRequiredValidationErrorFor('hourlyRate');
-			expect(error).toHaveRequiredValidationErrorFor('totalExcludingVat');
-			expect(error).toHaveRequiredValidationErrorFor('vat');
-			expect(error).toHaveRequiredValidationErrorFor('totalIncludingVat');
+			should.exist(error);
+			validationHelper.checkRequiredValidationErrorFor(error, 'company');
+			validationHelper.checkRequiredValidationErrorFor(error, 'customer');
+			validationHelper.checkRequiredValidationErrorFor(error, 'invoiceNumber');
+			validationHelper.checkRequiredValidationErrorFor(error, 'date');
+			validationHelper.checkRequiredValidationErrorFor(error, 'dueDate');
+			validationHelper.checkRequiredValidationErrorFor(error, 'activity');
+			validationHelper.checkRequiredValidationErrorFor(error, 'totalHours');
+			validationHelper.checkRequiredValidationErrorFor(error, 'hourlyRate');
+			validationHelper.checkRequiredValidationErrorFor(error, 'totalExcludingVat');
+			validationHelper.checkRequiredValidationErrorFor(error, 'vat');
+			validationHelper.checkRequiredValidationErrorFor(error, 'totalIncludingVat');
 		});
 
 	});
 
 	describe('when it is saved with all of its required fields filled in', function() {
 		
-		beforeEach(function() {
+		beforeEach(function(done) {
 			invoice.save(function(err) {
 				error = err;
-				asyncSpecDone();
+				done();
 			});
-			asyncSpecWait();
 		});
 
-		afterEach(function() {
+		afterEach(function(done) {
 			// there's a unique index on invoice.invoiceNumber, if we don't remove it after
 			// each spec, the next insert fails
 			invoice.remove(function(err) {
-				asyncSpecDone();
+				done();
 			});
-			asyncSpecWait();
 		});
 
 		it('should not fail', function() {
-			expect(error).toBeNull();
+			should.not.exist(error);
 		});
 
-		it('should contain a default false value for paid', function() {
+		it('should contain a default false value for paid', function(done) {
 			Invoice.findById(invoice.id, function(err, result) {
-				expect(result.paid).toBe(false);
-				asyncSpecDone();
+				result.paid.should.be.false;
+				done();
 			});
-			asyncSpecWait();
 		});
 
 	});
@@ -93,9 +91,7 @@ describe('given a new invoice', function() {
 			return invoice;
 		},
 		entityModel: Invoice,
-		equalityFn: function(instance1, instance2) {
-			helper.customersShouldBeEqual(instance1, instance2);
-		},
+		equalityFn: equalityHelper.customersShouldBeEqual,
 		remove_entity_in_afterEach: true
 	});
 
@@ -109,9 +105,7 @@ describe('given a new invoice', function() {
 			return invoice;
 		},
 		entityModel: Invoice,
-		equalityFn: function(instance1, instance2) {
-			helper.companiesShouldBeEqual(instance1, instance2);
-		},
+		equalityFn: equalityHelper.companiesShouldBeEqual,
 		remove_entity_in_afterEach: true
 	});
 
@@ -125,9 +119,7 @@ describe('given a new invoice', function() {
 			return invoice;
 		},
 		entityModel: Invoice,
-		equalityFn: function(instance1, instance2) {
-			helper.activitiesShouldBeEqual(instance1, instance2);
-		},
+		equalityFn: equalityHelper.activitiesShouldBeEqual,
 		remove_entity_in_afterEach: true
 	});
 
@@ -137,45 +129,42 @@ describe('given an existing invoice', function() {
 	
 	var invoice = null;
 
-	beforeEach(function() {
+	beforeEach(function(done) {
 		invoice = new InvoiceBuilder().asPaid().build();
 		invoice.save(function(err) {
-			expect(err).toBeNull();
-			asyncSpecDone();
+			should.not.exist(err);
+			done();
 		});
-		asyncSpecWait();
 	});
 
-	afterEach(function() {
-		if (invoice.removed) { return; }
+	afterEach(function(done) {
+		if (invoice.removed) { done(); }
 		invoice.remove(function(err) {
-			asyncSpecDone();
+			done();
 		});
-		asyncSpecWait();
 	});
 
 	describe('when it is retrieved from the database', function() {
 		
 		var retrievedInvoice = null;
 
-		beforeEach(function() {
+		beforeEach(function(done) {
 			Invoice.findById(invoice.id, function(err, result) {
-				expect(err).toBeNull();
+				should.not.exist(err);
 				retrievedInvoice = result;
-				asyncSpecDone();
+				done();
 			});
-			asyncSpecWait();
 		});
 
 		it('should contain the same values that have been inserted', function() {
-			helper.invoicesShouldBeEqual(retrievedInvoice, invoice);
+			equalityHelper.invoicesShouldBeEqual(retrievedInvoice, invoice);
 		});
 
 	});
 
 	describe('when it is modified and updated', function() {
 		
-		beforeEach(function() {
+		beforeEach(function(done) {
 			invoice.company = '4e25937456436de850000009';
 			invoice.customer = '4e25937456436de850000008';
 			invoice.activity = '4e25937456436de850000007';
@@ -188,38 +177,34 @@ describe('given an existing invoice', function() {
 			invoice.paid = false;
 
 			invoice.save(function(err) {
-				expect(err).toBeNull();
-				asyncSpecDone();
+				should.not.exist(err);
+				done();
 			});
-			asyncSpecWait();
 		});
 
-		it('contains the updated values in the database', function() {
+		it('contains the updated values in the database', function(done) {
 			Invoice.findById(invoice.id, function(err, result) {
-				helper.invoicesShouldBeEqual(result, invoice);
-				asyncSpecDone();
+				equalityHelper.invoicesShouldBeEqual(result, invoice);
+				done();
 			});
-			asyncSpecWait();
 		});
 
 	});
 
 	describe('when it is deleted', function() {
-		beforeEach(function() {
+		beforeEach(function(done) {
 			invoice.remove(function(err) {
 				invoice.removed = true; // HACK: to avoid double removal in afterEach of parent suite
-				expect(err).toBeNull();
-				asyncSpecDone();
+				should.not.exist(err);
+				done();
 			});
-			asyncSpecWait();
 		});
 
-		it('can no longer be retrieved', function() {
+		it('can no longer be retrieved', function(done) {
 			Invoice.findById(invoice.id, function(err, result) {
-				expect(result).toBeNull();
-				asyncSpecDone();
+				should.not.exist(result);
+				done();
 			});
-			asyncSpecWait();
 		});
 
 	});

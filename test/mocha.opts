@@ -1,0 +1,4 @@
+--require should
+--require assert
+--reporter spec
+--ui bdd 

@@ -15,7 +15,8 @@
 	"devDependencies" :
 	{
 		"node-jslint-all" : "= 0.2.0",
-		"jasmine-node" : "= 1.0.12",
+		"mocha" : ">= 0.10.2",
+		"should" : ">= 0.5.1",
 		"request" : ">= 2.1.0"
 	}
 }

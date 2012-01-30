@@ -1,4 +1,5 @@
-var User = require('../../lib/entities').User;
+var User = require('../../lib/entities').User,
+	should = require('should');
 
 describe('given a user', function() {
 	
@@ -9,7 +10,7 @@ describe('given a user', function() {
 	});
 
 	it('should have a default salt value', function() {
-		expect(user.salt).not.toBe(null);
+		should.exist(user.salt);
 	});
 
 	describe('when you create another user', function() {
@@ -20,7 +21,7 @@ describe('given a user', function() {
 		});
 
 		it('should not have the same salt value as the previous user', function() {
-			expect(user.salt).not.toEqual(user2.salt);
+			user.salt.should.not.equal(user2.salt);
 		});
 
 	});
@@ -32,13 +33,13 @@ describe('given a user', function() {
 		});
 
 		it('should not contain the password value in passwdHash', function() {
-			expect(user.passwdHash).not.toEqual('my_password');
+			user.passwdHash.should.not.equal('my_password');
 		});
 
 		describe('when you validate the password with the correct value', function() {
 
 			it('should return true', function() {
-				expect(user.validatePassword('my_password')).toBe(true);
+				user.validatePassword('my_password').should.be.true;
 			});			
 
 		});
@@ -46,7 +47,7 @@ describe('given a user', function() {
 		describe('when you validate the password with an invalid value', function() {
 			
 			it('should return false', function() {
-				expect(user.validatePassword('something_else')).toBe(false);
+				user.validatePassword('something_else').should.be.false;
 			});
 
 		});

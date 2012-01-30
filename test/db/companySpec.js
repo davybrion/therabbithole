@@ -1,7 +1,9 @@
 var mongoose = require('mongoose'),
 	Company = require('../../lib/entities').Company,
 	CompanyBuilder = require('../builders/company_builder.js'),
-	helper = require('../helper_functions.js');
+	should = require('should'),
+	validationHelper = require('./mongoose_validation_helper.js'),
+	equalityHelper = require('../equality_functions.js');
 
 mongoose.connect('mongodb://localhost/therabbithole_test');
 mongoose.connection.collection('companies').drop();
@@ -17,43 +19,41 @@ describe('given a new company', function() {
 
 	describe('when it is saved with none of its required fields filled in', function() {
 		
-		beforeEach(function() {
+		beforeEach(function(done) {
 			company = new Company(); // the company reference by default points to a properly filled in instance
 			company.save(function(err) {
 				error = err;
-				asyncSpecDone();
+				done();
 			});
-			asyncSpecWait();
 		});
 
 		it('should fail with validation errors for each required field', function() {
-			expect(error).not.toBeNull();
-			expect(error).toHaveRequiredValidationErrorFor('name');
-			expect(error).toHaveRequiredValidationErrorFor('address.street');
-			expect(error).toHaveRequiredValidationErrorFor('address.postalCode');
-			expect(error).toHaveRequiredValidationErrorFor('address.city');
-			expect(error).toHaveRequiredValidationErrorFor('phoneNumber');
-			expect(error).toHaveRequiredValidationErrorFor('email');
-			expect(error).toHaveRequiredValidationErrorFor('vatNumber');
-			expect(error).toHaveRequiredValidationErrorFor('bankAccount');
-			expect(error).toHaveRequiredValidationErrorFor('iban');
-			expect(error).toHaveRequiredValidationErrorFor('bic');
+			should.exist(error);
+			validationHelper.checkRequiredValidationErrorFor(error, 'name');
+			validationHelper.checkRequiredValidationErrorFor(error, 'address.street');
+			validationHelper.checkRequiredValidationErrorFor(error, 'address.postalCode');
+			validationHelper.checkRequiredValidationErrorFor(error, 'address.city');
+			validationHelper.checkRequiredValidationErrorFor(error, 'phoneNumber');
+			validationHelper.checkRequiredValidationErrorFor(error, 'email');
+			validationHelper.checkRequiredValidationErrorFor(error, 'vatNumber');
+			validationHelper.checkRequiredValidationErrorFor(error, 'bankAccount');
+			validationHelper.checkRequiredValidationErrorFor(error, 'iban');
+			validationHelper.checkRequiredValidationErrorFor(error, 'bic');
 		});
 
 	});
 
 	describe('when it is saved with all of its required fields filled in', function() {
 		
-		beforeEach(function() {
+		beforeEach(function(done) {
 			company.save(function(err) {
 				error = err;
-				asyncSpecDone();
+				done();
 			});
-			asyncSpecWait();
 		});
 
 		it('should not fail', function() {
-			expect(error).toBeNull();
+			should.not.exist(error);
 		});
 
 	});
@@ -64,37 +64,35 @@ describe('given an existing company', function() {
 
 	var company = null;
 
-	beforeEach(function() {
+	beforeEach(function(done) {
 		company = new CompanyBuilder().build();
 		company.save(function(err) {
-			expect(err).toBeNull();
-			asyncSpecDone();
+			should.not.exist(err);
+			done();
 		});
-		asyncSpecWait();
 	});
 	
 	describe('when it is retrieved from the database', function() {
 		
 		var retrievedCompany = null;
 
-		beforeEach(function() {
+		beforeEach(function(done) {
 			Company.findById(company.id, function(err, result) {
-				expect(err).toBeNull();
+				should.not.exist(err);
 				retrievedCompany = result;
-				asyncSpecDone();
+				done();
 			});
-			asyncSpecWait();
 		});
 
 		it('should contain the same values that have been inserted', function() {
-			helper.companiesShouldBeEqual(retrievedCompany, company);
+			equalityHelper.companiesShouldBeEqual(retrievedCompany, company);
 		});
 
 	});
 
 	describe('when it is modified and updated', function() {
 		
-		beforeEach(function() {
+		beforeEach(function(done) {
 			company.name = 'some other company';
 			company.address = {
 				street: 'some other street',
@@ -110,38 +108,34 @@ describe('given an existing company', function() {
 			company.bic = 'bic';
 
 			company.save(function(err) {
-				expect(err).toBeNull();
-				asyncSpecDone();
+				should.not.exist(err);
+				done();
 			});
-			asyncSpecWait();
 		});
 
-		it('contains the updated values in the database', function() {
+		it('contains the updated values in the database', function(done) {
 			Company.findById(company.id, function(err, result) {
-				helper.companiesShouldBeEqual(result, company);
-				asyncSpecDone();
+				equalityHelper.companiesShouldBeEqual(result, company);
+				done();
 			});
-			asyncSpecWait();
 		});
 
 	});
 
 	describe('when it is deleted', function() {
 		
-		beforeEach(function() {
+		beforeEach(function(done) {
 			company.remove(function(err) {
-				expect(err).toBeNull();
-				asyncSpecDone();
+				should.not.exist(err);
+				done();
 			});
-			asyncSpecWait();
 		});		
 
-		it('can no longer be retrieved', function() {
+		it('can no longer be retrieved', function(done) {
 			Company.findById(company.id, function(err, result) {
-				expect(result).toBeNull();
-				asyncSpecDone();
+				should.not.exist(result);
+				done();
 			});
-			asyncSpecWait();
 		});
 
 	});

@@ -4,7 +4,9 @@ var mongoose = require('mongoose'),
 	ActivityBuilder = require('../builders/activity_builder.js'),
 	CustomerBuilder = require('../builders/customer_builder.js'),
 	mongooseTestHelper = require('./persistence_spec_functions.js'),
-	helper = require('../helper_functions.js');
+	validationHelper = require('./mongoose_validation_helper.js'),
+	equalityHelper = require('../equality_functions.js'),
+	should = require('should');
 	
 mongoose.connect('mongodb://localhost/therabbithole_test');
 mongoose.connection.collection('activities').drop();
@@ -20,44 +22,41 @@ describe('given a new activity', function() {
 
 	describe('when it is saved with none of its required fields filled in', function() {
 		
-		beforeEach(function() {
+		beforeEach(function(done) {
 			activity = new Activity(); // the activity reference by default points to a properly filled in instance
 			activity.save(function(err) {
 				error = err;
-				asyncSpecDone();
+				done();
 			});
-			asyncSpecWait();
 		});
 
 		it('should fail with validation errors for each required field', function() {
-			expect(error).not.toBeNull();
-			expect(error).toHaveRequiredValidationErrorFor('customer');
-			expect(error).toHaveRequiredValidationErrorFor('description');
-			expect(error).toHaveRequiredValidationErrorFor('hourlyRate');
+			should.exist(error);
+			validationHelper.checkRequiredValidationErrorFor(error, 'customer');
+			validationHelper.checkRequiredValidationErrorFor(error, 'description');
+			validationHelper.checkRequiredValidationErrorFor(error, 'hourlyRate');
 		});
 		
 	});
 
 	describe('when it is saved with all of its required fields filled in', function() {
 		
-		beforeEach(function() {
+		beforeEach(function(done) {
 			activity.save(function(err) {
 				error = err;
-				asyncSpecDone();
+				done();
 			});
-			asyncSpecWait();
 		});
 
 		it('should not fail', function() {
-			expect(error).toBeNull();
+			should.not.exist(error);
 		});
 
-		it('should contain a default false value for billed', function() {
+		it('should contain a default false value for billed', function(done) {
 			Activity.findById(activity.id, function(err, result) {
-				expect(result.billed).toBe(false);
-				asyncSpecDone();
+				result.billed.should.be.false;
+				done();
 			});
-			asyncSpecWait();
 		});
 		
 	});
@@ -68,64 +67,60 @@ describe('given a new activity', function() {
 			yesterday = new Date();
 		yesterday.setDate(yesterday.getDate() -1);
 
-		beforeEach(function() {
+		beforeEach(function(done) {
 			activity.addPerformedWork(yesterday, 8);
 			activity.addPerformedWork(today, 6);
 			activity.save(function(err) {
 				error = err;
-				asyncSpecDone();
+				done();
 			});
-			asyncSpecWait();
 		});
 
 		it('should not cause validation errors', function() {
-			expect(error).toBeNull();
+			should.not.exist(error);
 		});
 
-		it('the performed work should be inserted in the database as well', function() {
+		it('the performed work should be inserted in the database as well', function(done) {
 			Activity.findById(activity.id, function(err, result) {
-				expect(result.performedWork.length).toBe(2);
-				expect(result.performedWork[0].date).toEqual(yesterday);
-				expect(result.performedWork[0].hours).toEqual(8);
-				expect(result.performedWork[1].date).toEqual(today);
-				expect(result.performedWork[1].hours).toEqual(6);
-				asyncSpecDone();
+				result.performedWork.length.should.equal(2);
+				result.performedWork[0].date.valueOf().should.equal(yesterday.valueOf());
+				result.performedWork[0].hours.valueOf().should.equal(8);
+				result.performedWork[1].date.valueOf().should.equal(today.valueOf());
+				result.performedWork[1].hours.valueOf().should.equal(6);
+				done();
 			});
-			asyncSpecWait();
 		});
 		
 	});
 	
 	describe('when it is saved with too much performed work added to it', function() {
 		
-		beforeEach(function() {
+		beforeEach(function(done) {
 			activity.addPerformedWork(new Date(), 17); // max value is set at 16;
 			activity.save(function(err) {
 				error = err;
-				asyncSpecDone();
+				done();
 			});
-			asyncSpecWait();
 		});
 
 		it('should cause a max value validation error if the number of hours is too large', function() {
-			expect(error).toHaveMaxValidationErrorFor('hours');
+			validationHelper.checkMaxValidationErrorFor('hours');
 		});
 
 	});
 
 	describe('when it is saved with too little performed work added to it', function() {
 		
-		beforeEach(function() {
+		beforeEach(function(done) {
 			activity.addPerformedWork(new Date(), 0); // min value is 1
 			activity.save(function(err) {
 				error = err;
-				asyncSpecDone();
+				done();
 			});
-			asyncSpecWait();
 		});
 
 		it('should cause a min value validation error if the number of hours is too small', function() {
-			expect(error).toHaveMinValidationErrorFor('hours');
+			validationHelper.checkMinValidationErrorFor('hours');
 		});
 
 	});
@@ -140,9 +135,7 @@ describe('given a new activity', function() {
 			return activity;
 		},
 		entityModel: Activity,
-		equalityFn: function(instance1, instance2) {
-			helper.customersShouldBeEqual(instance1, instance2);
-		},
+		equalityFn: equalityHelper.customersShouldBeEqual
 	});
 
 });
@@ -151,77 +144,71 @@ describe('given an existing activity', function() {
 
 	var activity = null;
 
-	beforeEach(function() {
+	beforeEach(function(done) {
 		activity = new ActivityBuilder()
 			.asBilled()
 			.build();
 		activity.save(function(err) {
-			expect(err).toBeNull();
-			asyncSpecDone();
+			should.not.exist(err);
+			done();
 		});
-		asyncSpecWait();
 	});
 
 	describe('when it is retrieved from the database', function() {
 
 		var retrievedActivity = null;
 
-		beforeEach(function() {
+		beforeEach(function(done) {
 			Activity.findById(activity.id, function(err, result) {
-				expect(err).toBeNull();
+				should.not.exist(err);
 				retrievedActivity = result;
-				asyncSpecDone();
+				done();
 			});
-			asyncSpecWait();
 		});
 		
 		it('should contain the same values that have been inserted', function() {
-			helper.activitiesShouldBeEqual(retrievedActivity, activity);
+			equalityHelper.activitiesShouldBeEqual(retrievedActivity, activity);
 		});
 		
 	});
 
 	describe('when it is modified and updated', function() {
 			
-		beforeEach(function() {
+		beforeEach(function(done) {
 			activity.customer = '4e25937456436de850000007';
 			activity.description = 'some other cool project';
 			activity.hourlyRate = 77;
 			activity.billed = false;
 			activity.performedWork = [];
 			activity.save(function(err) {
-				expect(err).toBeNull();
-				asyncSpecDone();
+				should.not.exist(err);
+				done();
 			});
-			asyncSpecWait();
 		});
 
-		it('contains the updated values in the database', function() {
+		it('contains the updated values in the database', function(done) {
 			Activity.findById(activity.id, function(err, result) {
-				helper.activitiesShouldBeEqual(result, activity);
-				asyncSpecDone();
+				equalityHelper.activitiesShouldBeEqual(result, activity);
+				done();
 			});
-			asyncSpecWait();
 		});
 
 	});
 
 	describe('when it is deleted', function() {
 		
-		beforeEach(function() {
+		beforeEach(function(done) {
 			activity.remove(function(err) {
-				expect(err).toBeNull();
-				asyncSpecDone();
+				should.not.exist(err);
+				done();
 			});
-			asyncSpecWait();
 		});		
 
-		it('can no longer be retrieved', function() {
+		it('can no longer be retrieved', function(done) {
 			Activity.findById(activity.id, function(err, result) {
-				expect(result).toBeNull();
-				asyncSpecDone();
+				should.not.exist(result);
+				done();
 			});
-			asyncSpecWait();
 		});
 
 	});

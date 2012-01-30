@@ -1,47 +1,47 @@
+var should = require('should');
+
 function create_entity_with_reference_and_check_populate(data) {
 	describe('when ' + data.entityName + ' is saved with a reference to an existing ' + data.referenceName, function() {
 		var referencedEntity = null,
 			entity = null;
 
-		beforeEach(function() {
+		beforeEach(function(done) {
 			entity = data.getEntityFn();
 			referencedEntity = data.buildReferenceEntityFn();
 			referencedEntity.save(function(err) {
-				expect(err).toBeNull();
+				should.not.exist(err);
 				entity[data.referenceName] = referencedEntity.id;
 				entity.save(function(err) {
-					expect(err).toBeNull();
-					asyncSpecDone();
+					should.not.exist(err);
+					done();
 				});
 			});
-			asyncSpecWait();
 		});
 		
 		if (data.remove_entity_in_afterEach) {
-			afterEach(function() {
+			afterEach(function(done) {
 				entity.remove(function(err) {
-					expect(err).toBeNull();
-					asyncSpecDone();
+					should.not.exist(err);
+					done();
 				});
-				asyncSpecWait();
 			});	
 		}
 
 		describe('when we specify that ' + data.referenceName + ' should be populated when we retrieve ' + data.entityName, function() {
 			
-			var retrievedEntity = null;
+			var retrievedEntity = null,
+				error = null;
 
-			beforeEach(function() {
+			beforeEach(function(done) {
 				data.entityModel.findById(entity.id).populate(data.referenceName).run(function(err, result) {
 					error = err;
 					retrievedEntity = result;
-					asyncSpecDone();
+					done();
 				});
-				asyncSpecWait();
 			});
 
 			it('should not fail', function() {
-				expect(error).toBeNull();
+				should.not.exist(error);
 			});
 
 			it('should populate the ' + data.referenceName + ' property in the returned ' + data.entityName, function() {

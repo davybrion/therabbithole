@@ -3,18 +3,23 @@ var mongooseInit = require('../../lib/mongoose_init').connect('mongodb://localho
 	Customer = require('../../lib/entities/customer'),
 	CustomerBuilder = require('../builders/customer_builder'),
 	requesthelper = require('./request_helper'),
-	entityhelper = require('./../helper_functions'),
+	entityhelper = require('./../equality_functions'),
+	should = require('should'),
 	response = null;
 
-function handleResponse(err, res) {
-	expect(err).toBeNull();
+function handleResponse(err, res, done) {
+	should.not.exist(err);
 	response = res;
-	asyncSpecDone();
+	done();
 }
 
-require('./auth_helper.js');
+var auth = require('./auth_helper.js');
 
 describe('post /customer', function() {
+
+	beforeEach(function(done) {
+		auth.post_login(done);
+	});
 	
 	describe('when the request contains a customer document with all required fields provided', function() {
 
@@ -28,62 +33,58 @@ describe('post /customer', function() {
 			vatNumber: '1234567890'
 		}; 
 
-		beforeEach(function() {
-			requesthelper.post('/customer', customer, handleResponse);
-			asyncSpecWait();
+		beforeEach(function(done) {
+			requesthelper.post('/customer', customer, handleResponse, done);
 		});
 
-		afterEach(function() {
+		afterEach(function(done) {
 			Customer.remove({ _id: response.body._id}, function(err) {
-				asyncSpecDone();
+				done();
 			});
-			asyncSpecWait();
 		});
 
 		it('should have a statuscode of 201', function() {
-			expect(response.statusCode).toBe(201);
+			response.statusCode.should.equal(201);
 		});
 
 		it('should have the customer document in the response body', function() {
-			expect(response.body.name).toEqual(customer.name);
-			expect(response.body.address).toEqual(customer.address);
-			expect(response.body.vatNumber).toEqual(customer.vatNumber);
+			response.body.name.should.equal(customer.name);
+			entityhelper.addressesShouldBeEqual(response.body.address, customer.address);
+			response.body.vatNumber.should.equal(customer.vatNumber);
 		});		
 
-		it('should have persisted the document in the database', function() {
+		it('should have persisted the document in the database', function(done) {
 			Customer.findById(response.body._id, function(err, result) {
-				expect(err).toBeNull();
-				expect(result.id).toEqual(response.body._id);
-				asyncSpecDone();
+				should.not.exist(err);
+				result.id.should.equal(response.body._id);
+				done();
 			});
-			asyncSpecWait();
 		});
 
 		it('should contain a valid Location header value pointing to the new customer', function() {
-			expect(response.headers.location).toBe('http://localhost:3000/customer/' + response.body._id);
+			response.headers.location.should.equal('http://localhost:3000/customer/' + response.body._id)
 		});
 
 	});
 
 	describe('when the request contains a customer document with missing required fields', function() {
 
-		beforeEach(function() {
-			post('/customer', { name: 'some name', vatNumber: '1234567890' }, handleResponse);
-			asyncSpecWait();
+		beforeEach(function(done) {
+			requesthelper.post('/customer', { name: 'some name', vatNumber: '1234567890' }, handleResponse, done);
 		});
 
 		it('should have a statuscode of 500', function() {
-			expect(response.statusCode).toBe(500);
+			response.statusCode.should.equal(500);
 		});
 
 		it('should have an error message in the body', function() {
-			expect(response.body).toEqual('Validation failed');
+			response.body.should.equal('Validation failed');
 		});
 	});
 
 	describe('when the request contains a customer document that already has an id value', function() {
-		beforeEach(function() {
-			post('/customer', {
+		beforeEach(function(done) {
+			requesthelper.post('/customer', {
 				id: '4e53dd6773a37be113000001',
 				name: 'some name',
 				address: {
@@ -92,16 +93,15 @@ describe('post /customer', function() {
 					city: 'some city'
 				},
 				vatNumber: '1234567890'
-			}, handleResponse);
-			asyncSpecWait();
+			}, handleResponse, done);
 		});
 
 		it('should have a statuscode of 412', function() {
-			expect(response.statusCode).toBe(412);
+			response.statusCode.should.equal(412);
 		});
 
 		it('should have an error message in the body', function() {
-			expect(response.body).toEqual('customer should not have an id value');
+			response.body.should.equal('customer should not have an id value');
 		});
 	});
 
@@ -109,15 +109,18 @@ describe('post /customer', function() {
 
 describe('get /customer/:id', function() {
 	
+	beforeEach(function(done) {
+		auth.post_login(done);
+	});
+
 	describe('when the request contains an id of a non-existing customer', function() {
 
-		beforeEach(function() {
-			requesthelper.get('/customer/4e552df6c83e22b929999999', handleResponse);
-			asyncSpecWait();
+		beforeEach(function(done) {
+			requesthelper.get('/customer/4e552df6c83e22b929999999', handleResponse, done);
 		});
 
 		it('should have a status code of 404', function() {
-			expect(response.statusCode).toBe(404);
+			response.statusCode.should.equal(404);
 		});
 
 	});
@@ -126,27 +129,25 @@ describe('get /customer/:id', function() {
 		
 		var customer = null;
 		
-		beforeEach(function() {
+		beforeEach(function(done) {
 			customer = new CustomerBuilder()
 				.withContact({ name: 'some contact', email: 'some email' })
 				.build();
 			customer.save(function(err) {
-				expect(err).toBeNull();
-				requesthelper.get('/customer/' + customer.id, handleResponse);
+				should.not.exist(err);
+				requesthelper.get('/customer/' + customer.id, handleResponse, done);
 			});
-			asyncSpecWait();
 		});
 
-		afterEach(function() {
+		afterEach(function(done) {
 			customer.remove(function(err) {
-				expect(err).toBeNull();
-				asyncSpecDone();
+				should.not.exist(err);
+				done();
 			});
-			asyncSpecWait();
 		});
 
 		it('should have a statusCode of 200', function() {
-			expect(response.statusCode).toBe(200);
+			response.statusCode.should.equal(200);
 		});
 
 		it('should have the customer document in the response body', function() {

@@ -1,4 +1,5 @@
-var Activity = require('../../lib/entities').Activity;
+var Activity = require('../../lib/entities').Activity,
+	should = require('should');
 
 describe('given an activity', function() {
 
@@ -19,10 +20,10 @@ describe('given an activity', function() {
 		});
 
 		it('should hold the values in the performedWork array', function() {
-			expect(activity.performedWork[0].date).toEqual(yesterday);
-			expect(activity.performedWork[0].hours).toEqual(8);
-			expect(activity.performedWork[1].date).toEqual(today);
-			expect(activity.performedWork[1].hours).toEqual(7);
+			activity.performedWork[0].date.should.equal(yesterday);
+			activity.performedWork[0].hours.valueOf().should.equal(8);
+			activity.performedWork[1].date.should.equal(today);
+			activity.performedWork[1].hours.valueOf().should.equal(7);
 		});
 
 	});
@@ -42,11 +43,11 @@ describe('given an activity', function() {
 		});
 
 		it('should throw an exception', function() {
-			expect(error).not.toBe(null);
+			should.exist(error);
 		});
 
 		it('should not hold the performed work for the duplicate day', function() {
-			expect(activity.performedWork.length).toEqual(1);
+			activity.performedWork.length.should.equal(1);
 		});
 
 	});
